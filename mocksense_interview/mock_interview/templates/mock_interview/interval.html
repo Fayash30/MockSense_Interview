@@ -1,149 +1,211 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Mock Interview</title>
-    <style>
-        /* Style for the camera feed */
-        #camera-container {
-            position: fixed;
-            top: 10px;
-            right: 10px;
-            width: 300px;
-            height: 220px;
-            border: 2px solid black;
-            background: black;
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Mock Interview</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 0;
+      position: relative;
+    }
+
+    h1 {
+      text-align: center;
+      margin-top: 30px;
+      color: #222;
+    }
+
+    #question {
+      text-align: center;
+      font-size: 1.2rem;
+      margin: 20px;
+    }
+
+    /* Camera container style */
+    #camera-container {
+      position: fixed;
+      top: 10px;
+      right: 10px;
+      width: 300px;
+      height: 220px;
+      border: 2px solid black;
+      background: black;
+    }
+
+    video {
+      width: 100%;
+      height: 100%;
+    }
+
+    /* Consent banner */
+    .consent-container {
+      position: fixed;
+      bottom: 10px;
+      right: 10px;
+      background: #fff;
+      border-radius: 12px;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+      padding: 15px 20px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      animation: slideUp 0.5s ease-out;
+    }
+
+    .consent-btn {
+      padding: 8px 18px;
+      border: none;
+      border-radius: 20px;
+      font-weight: bold;
+      cursor: pointer;
+      transition: transform 0.2s ease, box-shadow 0.2s ease;
+    }
+
+    .btn-understand {
+      background: black;
+      color: white;
+    }
+
+    .btn-decline {
+      background: red;
+      color: white;
+    }
+
+    .consent-btn:hover {
+      transform: scale(1.05);
+      box-shadow: 0 2px 10px rgba(0,0,0,0.2);
+    }
+
+    @keyframes slideUp {
+      from {
+        transform: translateY(50px);
+        opacity: 0;
+      }
+      to {
+        transform: translateY(0);
+        opacity: 1;
+      }
+    }
+  </style>
+  <script>
+    let questionIndex = 0;
+    let questions = [];
+
+    function getCSRFToken() {
+      let csrfToken = null;
+      const csrfCookie = document.cookie.split(';').find(cookie => cookie.trim().startsWith('csrftoken='));
+      if (csrfCookie) csrfToken = csrfCookie.split('=')[1];
+      return csrfToken;
+    }
+
+    window.onload = function () {
+      fetch("/mock_interview/start/", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "X-CSRFToken": getCSRFToken()
+        },
+        body: JSON.stringify({})
+      })
+      .then(response => response.json())
+      .then(data => {
+        if (data.status === "started") {
+          questions = data.questions;
+          startEmotionDetection();
+          showNextQuestion();
         }
-        video {
-            width: 100%;
-            height: 100%;
+      });
+    };
+
+    function showNextQuestion() {
+      if (questionIndex < questions.length) {
+        const questionText = questions[questionIndex];
+        document.getElementById("question").innerText = questionText;
+        speakQuestion(questionText);
+        listenToAnswer(questionIndex);
+        questionIndex++;
+      } else {
+        document.getElementById("question").innerText = "Interview complete!";
+      }
+    }
+
+    function speakQuestion(text) {
+      const speech = new SpeechSynthesisUtterance();
+      speech.text = text;
+      speech.volume = 1;
+      speech.rate = 1;
+      speech.pitch = 1;
+      window.speechSynthesis.speak(speech);
+    }
+
+    function listenToAnswer(index) {
+      fetch("/mock_interview/listen/", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "X-CSRFToken": getCSRFToken()
+        },
+        body: JSON.stringify({ duration: 60 })
+      })
+      .then(response => response.json())
+      .then(data => {
+        if (data.status === "completed") {
+          const userAnswer = data.answer;
+          console.log("User Answer: ", userAnswer);
+          saveUserAnswer(index, userAnswer);
+          setTimeout(showNextQuestion, 2000);
         }
-    </style>
-    <script>
-        let questionIndex = 0;
-        let questions = [];
+      });
+    }
 
-        // Get CSRF Token
-        function getCSRFToken() {
-            let csrfToken = null;
-            const csrfCookie = document.cookie.split(';').find(cookie => cookie.trim().startsWith('csrftoken='));
-            if (csrfCookie) {
-                csrfToken = csrfCookie.split('=')[1];
-            }
-            return csrfToken;
-        }
+    function saveUserAnswer(index, answer) {
+      fetch("/mock_interview/save_answer/", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "X-CSRFToken": getCSRFToken()
+        },
+        body: JSON.stringify({ question_index: index, answer: answer })
+      });
+    }
 
-        // Load Questions when page loads
-        window.onload = function () {
-            fetch("/mock_interview/start/", {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json",
-                    "X-CSRFToken": getCSRFToken()
-                },
-                body: JSON.stringify({})
-            })
-            .then(response => response.json())
-            .then(data => {
-                if (data.status === "started") {
-                    questions = data.questions;
-                    startEmotionDetection();
-                    showNextQuestion();
-                }
-            });
-        };
+    function startEmotionDetection() {
+      const video = document.createElement("video");
+      video.id = "emotion-video";
+      video.autoplay = true;
+      document.getElementById("camera-container").appendChild(video);
 
-        // Show the next question
-        function showNextQuestion() {
-            if (questionIndex < questions.length) {
-                const questionText = questions[questionIndex];
-                document.getElementById("question").innerText = questionText;
+      navigator.mediaDevices.getUserMedia({ video: true })
+        .then(stream => {
+          video.srcObject = stream;
+        })
+        .catch(error => {
+          console.error("Error accessing webcam:", error);
+        });
 
-                // Speak the question
-                speakQuestion(questionText);
-
-                // Listen for user's answer
-                listenToAnswer(questionIndex);
-
-                questionIndex++;
-            } else {
-                document.getElementById("question").innerText = "Interview complete!";
-            }
-        }
-
-        // Convert Text to Speech
-        function speakQuestion(text) {
-            const speech = new SpeechSynthesisUtterance();
-            speech.text = text;
-            speech.volume = 1;
-            speech.rate = 1;
-            speech.pitch = 1;
-            window.speechSynthesis.speak(speech);
-        }
-
-        // Listen and transcribe user’s speech
-        function listenToAnswer(index) {
-            fetch("/mock_interview/listen/", {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json",
-                    "X-CSRFToken": getCSRFToken()
-                },
-                body: JSON.stringify({ duration: 60 })  // Listen for 1 minute
-            })
-            .then(response => response.json())
-            .then(data => {
-                if (data.status === "completed") {
-                    const userAnswer = data.answer;
-                    console.log("User Answer: ", userAnswer);
-                    saveUserAnswer(index, userAnswer);
-                    setTimeout(showNextQuestion, 2000);  // Wait 2 sec before next question
-                }
-            });
-        }
-
-        // Save user's answer
-        function saveUserAnswer(index, answer) {
-            fetch("/mock_interview/save_answer/", {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json",
-                    "X-CSRFToken": getCSRFToken()
-                },
-                body: JSON.stringify({ question_index: index, answer: answer })
-            });
-        }
-
-        // Start Camera for Emotion Detection
-        function startEmotionDetection() {
-            const video = document.createElement("video");
-            video.id = "emotion-video";
-            video.autoplay = true;
-            document.getElementById("camera-container").appendChild(video);
-
-            navigator.mediaDevices.getUserMedia({ video: true })
-                .then(stream => {
-                    video.srcObject = stream;
-                })
-                .catch(error => {
-                    console.error("Error accessing webcam:", error);
-                });
-
-            setInterval(() => {
-                console.log("Emotion detection running...");
-            }, 5000);
-        }
-    </script>
+      setInterval(() => {
+        console.log("Emotion detection running...");
+      }, 5000);
+    }
+  </script>
 </head>
 <body>
-    <h1>Mock Interview</h1>
-    <p id="question">Loading questions...</p>
+  <h1>Mock Interview</h1>
+  <p id="question">Loading questions...</p>
 
-    <!-- Camera for Emotion Detection -->
-    <div id="camera-container">
-        <img src="/mock_interview/video_feed/" width="300px">
-    </div>
+  <!-- Camera feed -->
+  <div id="camera-container">
+    <img src="/mock_interview/video_feed/" width="300px">
+  </div>
+
+  <!-- Consent banner -->
+  <div class="consent-container">
+    <p>This site uses cookies to enhance user experience.</p>
+    <button class="consent-btn btn-decline">I Decline</button>
+    <button class="consent-btn btn-understand">I Understand</button>
+  </div>
 </body>
 </html>
-

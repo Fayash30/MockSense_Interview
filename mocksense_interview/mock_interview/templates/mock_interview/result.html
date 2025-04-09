@@ -1,71 +1,236 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Mock Interview Result</title>
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <script>
-        sessionStorage.removeItem("face_violations");
-        sessionStorage.removeItem("noface_violations");
-        sessionStorage.removeItem("camera_initialized");
-        sessionStorage.removeItem("camera_alerted");
-        sessionStorage.removeItem("cameraGranted");
-      </script>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            text-align: center;
-            padding: 20px;
-        }
-        .chart-container {
-            width: 80%;
-            margin: auto;
-        }
-        .score {
-            font-size: 20px;
-            font-weight: bold;
-            margin-top: 10px;
-        }
-    </style>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Mock Interview Result</title>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <script>
+    sessionStorage.removeItem("face_violations");
+    sessionStorage.removeItem("noface_violations");
+    sessionStorage.removeItem("camera_initialized");
+    sessionStorage.removeItem("camera_alerted");
+    sessionStorage.removeItem("cameraGranted");
+  </script>
+  <style>
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      background-color: #f4f4f4;
+      margin: 0;
+      padding: 0;
+      text-align: center;
+      animation: fadeIn 1s ease-in;
+    }
+
+    h2 {
+      margin-top: 40px;
+      font-size: 2rem;
+      color: #333;
+      animation: slideDown 1s ease-in-out;
+    }
+
+    .score {
+      font-size: 22px;
+      font-weight: bold;
+      margin: 20px 0;
+      color: #1ee9d5;
+      animation: popIn 1s ease-out;
+    }
+
+    .chart-section {
+      display: flex;
+      flex-direction: column;
+      gap: 30px;
+      justify-content: center;
+      align-items: center;
+      padding: 20px;
+    }
+
+    @media (min-width: 768px) {
+      .chart-section {
+        flex-direction: row;
+        align-items: flex-start;
+      }
+    }
+
+    .chart-container {
+      width: 90%;
+      max-width: 450px;
+      background: #fff;
+      padding: 25px;
+      border-radius: 12px;
+      box-shadow: 0 8px 16px rgba(0, 0, 0, 0.15);
+      animation: fadeSlide 1.2s ease-in-out;
+      transition: transform 0.3s;
+    }
+
+    .chart-container:hover {
+      transform: scale(1.03);
+    }
+
+    canvas {
+      animation: chartAppear 1s ease forwards;
+    }
+
+    /* Animations */
+    @keyframes fadeIn {
+      from { opacity: 0; }
+      to { opacity: 1; }
+    }
+
+    @keyframes slideDown {
+      from { transform: translateY(-30px); opacity: 0; }
+      to { transform: translateY(0); opacity: 1; }
+    }
+
+    @keyframes fadeSlide {
+      from { transform: translateY(40px); opacity: 0; }
+      to { transform: translateY(0); opacity: 1; }
+    }
+
+    @keyframes popIn {
+      0% { transform: scale(0.8); opacity: 0; }
+      100% { transform: scale(1); opacity: 1; }
+    }
+
+    @keyframes chartAppear {
+      from { opacity: 0; transform: scaleY(0.8); }
+      to { opacity: 1; transform: scaleY(1); }
+    }
+  </style>
 </head>
 <body>
-    {% include 'includes/navbar.html' %}
-    <h2>Mock Interview Results</h2>
-    <p class="score">Overall Score: {{ result_data.overall_score }}%</p>
+  {% include 'includes/navbar.html' %}
 
+  <h2>Mock Interview Results</h2>
+  <p class="score">Overall Score: <span id="score">{{ result_data.overall_score }}</span>%</p>
+
+  <div class="chart-section">
+    <!-- Bar Chart -->
     <div class="chart-container">
-        <canvas id="resultChart"></canvas>
+      <canvas id="resultChart"></canvas>
     </div>
 
-    <script>
-        const ctx = document.getElementById('resultChart').getContext('2d');
-        const similarityScores = {{ result_data.similarity_scores|safe }};
-        const labels = ["Question 1", "Question 2", "Question 3", "Question 4", "Question 5"];
+    <!-- Dashboard-style Pie Chart -->
+    <div class="chart-container">
+      <canvas id="dashboardPieChart"></canvas>
+    </div>
+  </div>
 
-        new Chart(ctx, {
-            type: 'bar',  // Change 'bar' to 'line' for a line chart
-            data: {
-                labels: labels,
-                datasets: [{
-                    label: 'Similarity Score (%)',
-                    data: similarityScores,
-                    backgroundColor: 'rgba(54, 162, 235, 0.6)',
-                    borderColor: 'rgba(54, 162, 235, 1)',
-                    borderWidth: 1
-                }]
-            },
-            options: {
-                responsive: true,
-                scales: {
-                    y: {
-                        beginAtZero: true,
-                        max: 100
-                    }
-                }
+  <script>
+    // Animate overall score (counter style)
+    const scoreElement = document.getElementById("score");
+    const finalScore = parseInt(scoreElement.innerText);
+    let currentScore = 0;
+    const increment = finalScore / 50;
+
+    const interval = setInterval(() => {
+      if (currentScore >= finalScore) {
+        scoreElement.innerText = finalScore;
+        clearInterval(interval);
+      } else {
+        currentScore += increment;
+        scoreElement.innerText = Math.floor(currentScore);
+      }
+    }, 20);
+
+    // Similarity Scores Data
+    const ctx = document.getElementById('resultChart').getContext('2d');
+    const similarityScores = {{ result_data.similarity_scores|safe }};
+    const labels = ["Question 1", "Question 2", "Question 3", "Question 4", "Question 5"];
+
+    // Bar Chart
+    new Chart(ctx, {
+      type: 'bar',
+      data: {
+        labels: labels,
+        datasets: [{
+          label: 'Similarity Score (%)',
+          data: similarityScores,
+          backgroundColor: 'rgba(233, 30, 99, 0.6)',
+          borderColor: 'rgba(233, 30, 99, 1)',
+          borderWidth: 2,
+          borderRadius: 6
+        }]
+      },
+      options: {
+        responsive: true,
+        animation: {
+          duration: 1000,
+          easing: 'easeOutBounce'
+        },
+        scales: {
+          y: {
+            beginAtZero: true,
+            max: 100,
+            ticks: {
+              callback: function(value) {
+                return value + "%";
+              }
             }
-        });
-    </script>
+          }
+        },
+        plugins: {
+          legend: {
+            labels: {
+              color: '#444',
+              font: {
+                weight: 'bold'
+              }
+            }
+          }
+        }
+      }
+    });
 
+    // Pie Chart (Correct vs Incorrect Answers)
+    const correctCount = similarityScores.filter(score => score >= 60).length;
+    const incorrectCount = similarityScores.length - correctCount;
+
+    const dashboardCtx = document.getElementById('dashboardPieChart').getContext('2d');
+    new Chart(dashboardCtx, {
+      type: 'doughnut',
+      data: {
+        labels: ['Correct Answers', 'Needs Improvement'],
+        datasets: [{
+          data: [correctCount, incorrectCount],
+          backgroundColor: [
+            'rgba(76, 175, 80, 0.7)', // green
+            'rgba(255, 87, 34, 0.7)'  // orange
+          ],
+          borderColor: [
+            'rgba(76, 175, 80, 1)',
+            'rgba(255, 87, 34, 1)'
+          ],
+          borderWidth: 2
+        }]
+      },
+      options: {
+        responsive: true,
+        cutout: '60%',
+        animation: {
+          animateRotate: true,
+          duration: 1500
+        },
+        plugins: {
+          legend: {
+            position: 'bottom',
+            labels: {
+              font: {
+                weight: 'bold'
+              }
+            }
+          },
+          tooltip: {
+            callbacks: {
+              label: function(context) {
+                return `${context.label}: ${context.parsed} responses`;
+              }
+            }
+          }
+        }
+      }
+    });
+  </script>
 </body>
 </html>

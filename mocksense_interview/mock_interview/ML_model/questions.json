@@ -1,9 +1,9 @@
 {
     "questions": [
-        "When should you use FastAPI over Flask?",
-        "What is event logging in software development?",
-        "What are asymptotic notations?",
-        "Explain the types of VR systems.",
-        "Why are Java streams important?"
+        "Explain the concept of program debugging and testing.",
+        "What is virtual reality?",
+        "Explain serialization in Java.",
+        "Explain the 'with' statement in Python.",
+        "Explain searching algorithms for arrays in computer programming."
     ]
 }

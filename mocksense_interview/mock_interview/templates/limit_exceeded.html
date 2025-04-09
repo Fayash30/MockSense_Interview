@@ -1,105 +1,143 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <title>Test Terminated</title>
-    <style>
-        body {
-            background-color: #fdf2f2;
-            font-family: Arial, sans-serif;
-            color: #b91c1c;
-            text-align: center;
-            padding: 50px;
-        }
+  <meta charset="UTF-8">
+  <title>Test Terminated</title>
+  <style>
+    body {
+      background-color: #fdf2f2;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      color: #b91c1c;
+      text-align: center;
+      padding: 50px;
+      overflow: hidden;
+      animation: fadeIn 1s ease-in-out;
+    }
 
-        .box {
-            background: #fff;
-            border: 2px solid #b91c1c;
-            padding: 30px;
-            border-radius: 10px;
-            display: inline-block;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
-        }
+    .box {
+      background: #fff;
+      border: 2px solid #b91c1c;
+      padding: 30px;
+      border-radius: 15px;
+      display: inline-block;
+      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+      animation: popIn 0.8s ease forwards;
+      transform: scale(0.9);
+    }
 
-        h1 {
-            font-size: 28px;
-            margin-bottom: 10px;
-        }
+    h1 {
+      font-size: 30px;
+      margin-bottom: 15px;
+      animation: slideDown 0.8s ease;
+    }
 
-        p {
-            font-size: 18px;
-            margin-top: 0;
-        }
+    p {
+      font-size: 18px;
+      margin-top: 0;
+      line-height: 1.6;
+      animation: fadeIn 1.2s ease;
+    }
 
-        .loader {
-            margin-top: 20px;
-            border: 4px solid #f3f3f3;
-            border-top: 4px solid #b91c1c;
-            border-radius: 50%;
-            width: 36px;
-            height: 36px;
-            animation: spin 1s linear infinite;
-            display: inline-block;
-        }
+    .loader {
+      margin-top: 30px;
+      border: 5px solid #f3f3f3;
+      border-top: 5px solid #b91c1c;
+      border-radius: 50%;
+      width: 40px;
+      height: 40px;
+      animation: spin 1s linear infinite;
+      display: inline-block;
+    }
 
-        @keyframes spin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
-        }
-    </style>
+    .emoji {
+      font-size: 50px;
+      display: block;
+      margin-bottom: 20px;
+      animation: bounce 1s infinite alternate;
+    }
+
+    /* Animations */
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+
+    @keyframes popIn {
+      from { transform: scale(0.8); opacity: 0; }
+      to { transform: scale(1); opacity: 1; }
+    }
+
+    @keyframes slideDown {
+      from { transform: translateY(-20px); opacity: 0; }
+      to { transform: translateY(0); opacity: 1; }
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; }
+      to { opacity: 1; }
+    }
+
+    @keyframes bounce {
+      from { transform: translateY(0); }
+      to { transform: translateY(-10px); }
+    }
+
+    @media (max-width: 600px) {
+      .box {
+        padding: 20px;
+      }
+      h1 {
+        font-size: 22px;
+      }
+    }
+  </style>
 </head>
 <body>
-    <div class="box">
-        <h1>🚫 Test Terminated</h1>
-      
-        {% if reason == "multiple_faces" %}
-        <h1>🧑‍💻 Test Terminated - Multiple Faces Detected</h1>
-        <p>👀 Our system detected multiple faces during the test.<br>
-        This violates the test rules. You are being logged out.</p>
-      
-      {% elif reason == "no_face" %}
-        <h1>😶 Test Terminated - No Face Detected</h1>
-        <p>📷 We couldn't detect your face multiple times during the test.<br>
-        Please stay in front of the camera at all times.<br>
-        You are being logged out for security reasons.</p>
-      
-      {% else %}
-        <h1>🚫 Test Terminated - Tab Switching</h1>
-        <p>🔁 You switched tabs multiple times, which is not allowed during this test.<br>
-        You are being logged out for violating the rules.</p>
-      {% endif %}
-      
+  <div class="box">
+    {% if reason == "multiple_faces" %}
+      <div class="emoji">👥</div>
+      <h1>Test Terminated - Multiple Faces Detected</h1>
+      <p>Our system detected multiple faces during the test.<br>
+      This violates the test rules. You are being logged out.</p>
 
-      
-        <p>🔒 You are being logged out for security reasons.</p>
-        <div class="loader"></div>
-      </div>
-      
+    {% elif reason == "no_face" %}
+      <div class="emoji">🙈</div>
+      <h1>Test Terminated - No Face Detected</h1>
+      <p>We couldn't detect your face multiple times during the test.<br>
+      Please stay in front of the camera at all times.<br>
+      You are being logged out for security reasons.</p>
 
-    <form id="logoutForm" method="POST" action="{% url 'logout' %}" style="display: none;">
-        {% csrf_token %}
-    </form>
+    {% else %}
+      <div class="emoji">🧭</div>
+      <h1>Test Terminated - Tab Switching</h1>
+      <p>You switched tabs multiple times, which is not allowed during this test.<br>
+      You are being logged out for violating the rules.</p>
+    {% endif %}
 
-    <script>
-        sessionStorage.removeItem("face_violations");
-        sessionStorage.removeItem("noface_violations");
-        sessionStorage.removeItem("camera_initialized");
-        sessionStorage.removeItem("camera_alerted");
-        sessionStorage.removeItem("cameraGranted");
-      </script>
-      
-    <script>
-        setTimeout(() => {
-            // Submit logout form after 3 seconds
-            document.getElementById("logoutForm").submit();
-        }, 3000);
+    <p>🔒 Logging out for security reasons...</p>
+    <div class="loader"></div>
+  </div>
 
-        // After logout, redirect to login
-        setTimeout(() => {
-            window.location.href = "{% url 'login' %}";
-        }, 7000);
+  <form id="logoutForm" method="POST" action="{% url 'logout' %}" style="display: none;">
+    {% csrf_token %}
+  </form>
 
-        
-    </script>
+  <script>
+    // Clear session storage flags
+    sessionStorage.removeItem("face_violations");
+    sessionStorage.removeItem("noface_violations");
+    sessionStorage.removeItem("camera_initialized");
+    sessionStorage.removeItem("camera_alerted");
+    sessionStorage.removeItem("cameraGranted");
+
+    // Logout and redirect
+    setTimeout(() => {
+      document.getElementById("logoutForm").submit();
+    }, 3000);
+
+    setTimeout(() => {
+      window.location.href = "{% url 'login' %}";
+    }, 7000);
+  </script>
 </body>
 </html>

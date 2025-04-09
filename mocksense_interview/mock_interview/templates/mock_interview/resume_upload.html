@@ -1,142 +1,136 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Resume Uploader</title>
-    <style>
-        body {
-            font-family: 'Arial', sans-serif;
-            background-color: #f0f0f0;
-            margin: 0;
-            padding: 0;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
-        }
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Resume Uploader</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: grey;
+      color: #fff;
+      height: 100vh;
+      margin: 0;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
 
-        .container {
-            background-color: white;
-            width: 50%;
-            max-width: 600px;
-            padding: 30px;
-            border-radius: 8px;
-            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
-            text-align: center;
-        }
+    .container {
+      background: white;
+      padding: 30px;
+      border-radius: 10px;
+      text-align: center;
+      width: 100%;
+      max-width: 400px;
+      border: 1px solid #ff4d4d;
+    }
 
-        h2 {
-            color: #4CAF50;
-            margin-bottom: 20px;
-        }
+    h2 {
+      color: #ff4d4d;
+      margin-bottom: 20px;
+    }
 
-        input[type="file"] {
-            width: 100%;
-            padding: 12px;
-            margin: 15px 0;
-            border: 2px solid #4CAF50;
-            border-radius: 8px;
-            font-size: 16px;
-            color: #333;
-            background-color: #f9f9f9;
-            cursor: pointer;
-        }
+    input[type="file"] {
+      width: 90%;
+      padding: 10px;
+      margin-bottom: 20px;
+      border: 2px dashed #ff4d4d;
+      background: #fff;
+      color: #000;
+      border-radius: 6px;
+      cursor: pointer;
+    }
 
-        button {
-            background-color: #4CAF50;
-            color: white;
-            padding: 12px 20px;
-            border: none;
-            border-radius: 8px;
-            cursor: pointer;
-            font-size: 18px;
-            margin-top: 20px;
-            transition: all 0.3s ease;
-        }
+    input[type="file"]::file-selector-button {
+      background: #ff4d4d;
+      color: #fff;
+      border: none;
+      padding: 6px 12px;
+      border-radius: 4px;
+      cursor: pointer;
+    }
 
-        button:hover {
-            background-color: #45a049;
-        }
+    button {
+      background: #ff4d4d;
+      color: #fff;
+      border: none;
+      padding: 10px 20px;
+      border-radius: 6px;
+      cursor: pointer;
+      font-weight: bold;
+    }
 
-        #message {
-            margin-top: 20px;
-            font-size: 16px;
-            font-weight: bold;
-        }
+    button:hover {
+      background: #e60000;
+    }
 
-        #nextButton {
-            display: none;
-            background-color: #007bff;
-            color: white;
-            padding: 12px 20px;
-            border: none;
-            border-radius: 8px;
-            cursor: pointer;
-            font-size: 18px;
-            margin-top: 20px;
-            transition: all 0.3s ease;
-        }
+    #message {
+      margin-top: 15px;
+    }
 
-        #nextButton:hover {
-            background-color: #0056b3;
-        }
+    #nextButton {
+      display: none;
+      margin-top: 15px;
+      background: #fff;
+      color: #000;
+      padding: 8px 16px;
+      border-radius: 5px;
+      text-decoration: none;
+      font-weight: bold;
+    }
 
-        /* Responsive design for smaller screens */
-        @media (max-width: 768px) {
-            .container {
-                width: 80%;
-            }
+    #nextButton:hover {
+      background: #ff4d4d;
+      color: #fff;
+    }
 
-            input[type="file"] {
-                font-size: 14px;
-            }
+    @media (max-width: 768px) {
+      .container {
+        padding: 20px;
+      }
 
-            button {
-                font-size: 16px;
-            }
-        }
-    </style>
+      h2 {
+        font-size: 20px;
+      }
+    }
+  </style>
 </head>
 <body>
-    {% include 'includes/navbar.html' %}
-    <div class="container">
-        <h2>Upload Your Resume</h2>
-        <form id="resumeForm" enctype="multipart/form-data">
-            <input type="file" id="resume" name="resume" accept=".pdf" required>
-            <button type="submit">Upload</button>
-        </form>
+  {% include 'includes/navbar.html' %}
+  <div class="container">
+    <h2>🚀 Upload Your Resume</h2>
+    <form id="resumeForm" enctype="multipart/form-data">
+      <input type="file" id="resume" name="resume" accept=".pdf" required />
+      <button type="submit">Upload</button>
+    </form>
 
-        <p id="message" style="color: green;"></p>
-        <a id="nextButton" href="{% url 'mock_interview_index' %}">Go to Next ➡️</a>
-    </div>
+    <p id="message"></p>
+    <a id="nextButton" href="{% url 'mock_interview_index' %}">➡ Go to Next</a>
+  </div>
 
-    <script>
-        document.getElementById("resumeForm").addEventListener("submit", function(event) {
-            event.preventDefault();
-            const formData = new FormData();
-            formData.append("resume", document.getElementById("resume").files[0]);
+  <script>
+    document.getElementById("resumeForm").addEventListener("submit", function (event) {
+      event.preventDefault();
+      const formData = new FormData();
+      formData.append("resume", document.getElementById("resume").files[0]);
 
-            fetch("/mock_interview/upload_resume/", {
-                method: "POST",
-                body: formData
-            })
-            .then(response => response.json())
-            .then(data => {
-                // Show success message
-                document.getElementById("message").innerText = "✅ Resume successfully uploaded!";
-                document.getElementById("message").style.color = "green";
-                
-                // Show the 'Go to Next' button
-                document.getElementById("nextButton").style.display = "inline-block";
-            })
-            .catch(error => {
-                console.error("Error:", error);
-                document.getElementById("message").innerText = "❌ Error uploading resume.";
-                document.getElementById("message").style.color = "red";
-            });
+      fetch("/mock_interview/upload_resume/", {
+        method: "POST",
+        body: formData,
+      })
+        .then((response) => response.json())
+        .then((data) => {
+          document.getElementById("message").innerText = "✅ Resume successfully uploaded!";
+          document.getElementById("message").style.color = "#00cc66";
+          document.getElementById("nextButton").style.display = "inline-block";
+        })
+        .catch((error) => {
+          console.error("Error:", error);
+          document.getElementById("message").innerText = "❌ Error uploading resume.";
+          document.getElementById("message").style.color = "#ff3333";
         });
-    </script>
+    });
+  </script>
 </body>
 </html>

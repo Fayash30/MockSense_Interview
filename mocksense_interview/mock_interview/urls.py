@@ -1,11 +1,6 @@
 from django.urls import path
 from . import views
 
-# urlpatterns = [
-    # path("", views.index, name="mock_interview_index"),  # Home page or dashboard
-    # path("quiz/", views.quiz_view, name="mock_interview_quiz"),  # Quiz page
-    # path("start/", views.start, name="start_interview"),  # Start interview
-    # path("result/", views.result, name="mock_interview_result"),  
 urlpatterns = [
     path("", views.index, name="mock_interview_index"),
     path('start/', views.start_interview, name='start_interview'),
