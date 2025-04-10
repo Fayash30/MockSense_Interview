@@ -1,9 +1,9 @@
 {
     "questions": [
-        "Explain microservices in DevOps.",
-        "What are lambda functions in Python?",
-        "What are stacks?",
-        "What is JavaScript?",
-        "Explain the concept of a full-stack developer."
+        "Explain stacks in computer programming.",
+        "Why use a web framework?",
+        "Why is Infrastructure as Code important in DevOps?",
+        "What is a SPA (Single Page Application)?",
+        "Explain how JVM works."
     ]
 }

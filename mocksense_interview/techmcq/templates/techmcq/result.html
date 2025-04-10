@@ -154,9 +154,9 @@
       {% endif %}
     </p>
 
-    <a href="{% url 'mcq-home' %}" class="btn next-btn">Next</a>
+    <a href="{% url 'discussion' %}" class="btn next-btn">Next</a>
 
-    <form action="{% url 'quiz_view' %}" method="get" style="display:inline;">
+    <form action="{% url 'mcq-home' %}" method="get" style="display:inline;">
       <button type="submit" class="btn try-again-btn">Try Again</button>
     </form>
   </div>

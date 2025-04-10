@@ -1,154 +1,3 @@
-{% comment %} <!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <title>Technical MCQ Quiz</title>
-  <style>
-    body {
-      font-family: 'Segoe UI', sans-serif;
-      margin: 0;
-      background: #f7f9fc;
-    }
-
-    .container {
-      display: flex;
-      max-width: 1200px;
-      margin: 2rem auto;
-      gap: 1.5rem;
-    }
-
-    .sidebar {
-      width: 120px;
-      background: #ffffff;
-      padding: 1rem;
-      border-radius: 12px;
-      box-shadow: 0 0 8px rgba(0, 0, 0, 0.1);
-      display: grid;
-      grid-template-columns: repeat(2, 1fr);
-      gap: 0.5rem;
-      justify-items: center;
-    }
-
-    .sidebar button {
-      width: 40px;
-      height: 40px;
-      border: none;
-      border-radius: 50%;
-      color: white;
-      font-weight: bold;
-      cursor: pointer;
-    }
-
-    .quiz-box {
-      flex: 1;
-      background: #ffffff;
-      padding: 2rem;
-      border-radius: 12px;
-      box-shadow: 0 0 8px rgba(0, 0, 0, 0.1);
-      display: flex;
-      flex-direction: column;
-      justify-content: space-between;
-      min-height: 500px;
-    }
-
-    .question-number {
-      font-size: 1.2rem;
-      margin-bottom: 1rem;
-      color: #333;
-    }
-
-    #question-text {
-      font-size: 1.1rem;
-      margin-bottom: 1rem;
-    }
-
-    .options label {
-      display: block;
-      margin-bottom: 0.8rem;
-      font-size: 1rem;
-    }
-
-    input[type="radio"] {
-      margin-right: 8px;
-    }
-
-    .nav-buttons {
-      margin-top: auto;
-      display: flex;
-      justify-content: space-around;
-      gap: 2rem;
-      padding-top: 2rem;
-    }
-
-    button.nav {
-      padding: 0.8rem 1.6rem;
-      border: none;
-      background-color: #007bff;
-      color: white;
-      border-radius: 8px;
-      font-weight: bold;
-      cursor: pointer;
-    }
-
-    button.nav:hover {
-      background-color: #0056b3;
-    }
-
-    #results {
-      max-width: 900px;
-      margin: 3rem auto;
-      display: none;
-    }
-
-    .result-question {
-      background: #f8f8f8;
-      padding: 1rem;
-      border-radius: 8px;
-      margin-bottom: 1.2rem;
-      box-shadow: 0 0 4px rgba(0, 0, 0, 0.05);
-    }
-
-    .correct {
-      color: green;
-      font-weight: bold;
-    }
-
-    .wrong {
-      color: red;
-      font-weight: bold;
-    }
-
-    #score {
-      font-size: 1.5rem;
-      font-weight: bold;
-      margin-bottom: 2rem;
-      text-align: center;
-    }
-
-    h2 {
-      text-align: center;
-    }
-  </style>
-</head>
-<body>
-  <div class="container">
-    <div class="sidebar" id="sidebar"></div>
-
-    <div class="quiz-box" id="quiz-box">
-      <div>
-        <div class="question-number" id="question-number"></div>
-        <div id="question-text"></div>
-        <div class="options" id="options"></div>
-      </div>
-      <div class="nav-buttons" id="nav-buttons"></div>
-    </div>
-  </div>
-
-  <div id="results"></div>
-
-  <script src="script.js"></script>
-</body>
-</html> {% endcomment %}
 {% load static %}
 <!DOCTYPE html>
 <html lang="en">
@@ -280,9 +129,63 @@
     h2 {
       text-align: center;
     }
+    .legend {
+  display: flex;
+  justify-content: center;
+  gap: 2rem;
+  margin-top: 2rem;
+  font-size: 1rem;
+  background: #ffffff;
+  padding: 1rem;
+  border-radius: 12px;
+  box-shadow: 0 0 8px rgba(0, 0, 0, 0.1);
+  max-width: 600px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.legend-item {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.color-box {
+  width: 18px;
+  height: 18px;
+  border-radius: 4px;
+  display: inline-block;
+  border: 1px solid #ccc;
+}
+
+.answered {
+  background-color: #007bff;
+}
+
+.skipped {
+  background-color: #ff9800;
+}
+
+.unattempted {
+  background-color: #ccc;
+}
+
   </style>
 </head>
 <body>
+  {% include 'includes/navbar.html' %}
+  <div class="legend">
+    <div class="legend-item">
+      <span class="color-box answered"></span> Answered
+    </div>
+    <div class="legend-item">
+      <span class="color-box skipped"></span> Skipped
+    </div>
+    <div class="legend-item">
+      <span class="color-box unattempted"></span> Unattempted
+    </div>
+  </div>
+  
   <div class="container">
     <div class="sidebar" id="sidebar"></div>
 
@@ -298,6 +201,10 @@
 
   <div id="results"></div>
 
+  <!-- Passing the question data from backend to JS -->
+  <script>
+    const questions = {{ questions_json|safe }};
+  </script>
   <script src="{% static 'techmcq/script.js' %}"></script>
 </body>
 </html>

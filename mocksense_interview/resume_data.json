@@ -1,13 +1,13 @@
 {
     "Name": "Flask",
     "Skills": [
-        "DevOps",
-        "Python",
         "AWS",
-        "AI",
         "Django",
+        "DevOps",
         "Flask",
-        "Java"
+        "Java",
+        "Python",
+        "AI"
     ],
     "Projects": [
         "Automated Evaluation with AWS: Use AWS services like S3, Lambda, and SageMaker to automatically"

@@ -3,22 +3,13 @@ let currentIndex = 0;
 let answers = {};
 let skipped = {};
 
-fetch("/static/techmcq/sde_mcq_275_unique.json")
+fetch("/techmcq/get-questions/")
   .then(res => res.json())
   .then(data => {
-    questions = shuffleArray(data).slice(0, 10);
+    questions = data;
     generateSidebar();
     renderQuestion();
   });
-
-function shuffleArray(array) {
-  let a = array.slice();
-  for (let i = a.length - 1; i > 0; i--) {
-    let j = Math.floor(Math.random() * (i + 1));
-    [a[i], a[j]] = [a[j], a[i]];
-  }
-  return a;
-}
 
 function generateSidebar() {
   const sidebar = document.getElementById("sidebar");
@@ -53,7 +44,7 @@ function renderQuestion() {
 
 function selectOption(opt) {
   answers[currentIndex] = opt;
-  delete skipped[currentIndex]; // unmark skip if answered
+  delete skipped[currentIndex];
   updateSidebarColors();
 }
 
@@ -61,12 +52,13 @@ function updateSidebarColors() {
   const buttons = document.getElementById("sidebar").children;
   for (let i = 0; i < buttons.length; i++) {
     if (answers[i]) {
-      buttons[i].style.backgroundColor = "#28a745"; // green
+      buttons[i].style.backgroundColor = "#007bff"; // Answered - Blue
     } else if (skipped[i]) {
-      buttons[i].style.backgroundColor = "#dc3545"; // red
+      buttons[i].style.backgroundColor = "#ff9800"; // Skipped - Orange
     } else {
-      buttons[i].style.backgroundColor = "#888";    // gray
+      buttons[i].style.backgroundColor = "#ccc";    // Unattempted - Light Gray
     }
+    
   }
 }
 
@@ -126,39 +118,19 @@ function updateNavButtons() {
 function submitQuiz() {
   const unanswered = questions.filter((_, idx) => !(idx in answers));
   if (unanswered.length > 0) {
-    alert(`You have ${unanswered.length} unanswered question(s). Please complete them before submitting.`);
+    alert(`You have ${unanswered.length} unanswered question(s).`);
     return;
   }
 
-  let score = 0;
-  const resultDiv = document.getElementById("results");
-  document.getElementById("quiz-box").style.display = "none";
-  resultDiv.innerHTML = `<div id="score"></div><h2>Quiz Results</h2>`;
-
-  questions.forEach((q, idx) => {
-    const userAns = answers[idx];
-    const correctAns = q.answer;
-    const isCorrect = userAns === correctAns;
-    if (isCorrect) score++;
-
-    const div = document.createElement("div");
-    div.className = "result-question";
-    div.innerHTML = `
-      <div><strong>Q${idx + 1}:</strong> ${q.question}</div>
-      <div>Your Answer: <span class="${isCorrect ? 'correct' : 'wrong'}">${q.options[userAns] || 'Not Answered'}</span></div>
-      <div>Correct Answer: <strong>${q.options[correctAns]}</strong></div>
-    `;
-    resultDiv.appendChild(div);
+  fetch('/techmcq/submit-answers/', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ answers: answers, questions: questions })
+  })
+  .then(response => response.json())
+  .then(data => {
+    if (data.redirect_url) {
+      window.location.href = data.redirect_url;
+    }
   });
-
-  document.getElementById("score").innerText = `Your Score: ${score} / ${questions.length}`;
-  resultDiv.style.display = "block";
-
-  const retryBtn = document.createElement("button");
-  retryBtn.innerText = "Retry Quiz";
-  retryBtn.className = "nav";
-  retryBtn.style.display = "block";
-  retryBtn.style.margin = "2rem auto";
-  retryBtn.onclick = () => location.reload();
-  resultDiv.appendChild(retryBtn);
 }
