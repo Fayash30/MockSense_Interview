@@ -5,29 +5,46 @@
   <meta charset="UTF-8">
   <title>Aptitude Quiz</title>
   <style>
+    /* ===== Base Setup ===== */
     body {
       font-family: 'Segoe UI', sans-serif;
       margin: 0;
-      background: #f7f9fc;
+      background: linear-gradient(to right, #ece9e6, #ffffff);
+      overflow-x: hidden;
+      animation: fadeInBody 1s ease-in-out;
     }
 
+    @keyframes fadeInBody {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    /* ===== Container Layout ===== */
     .container {
       display: flex;
       max-width: 1200px;
       margin: 2rem auto;
       gap: 1.5rem;
+      padding: 0 1rem;
     }
 
+    /* ===== Sidebar with Buttons ===== */
     .sidebar {
       width: 120px;
       background: #ffffff;
       padding: 1rem;
-      border-radius: 12px;
-      box-shadow: 0 0 8px rgba(0, 0, 0, 0.1);
+      border-radius: 16px;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.15);
       display: grid;
       grid-template-columns: repeat(2, 1fr);
-      gap: 0.5rem;
+      gap: 0.7rem;
       justify-items: center;
+      animation: slideInLeft 1s ease;
+    }
+
+    @keyframes slideInLeft {
+      from { transform: translateX(-30px); opacity: 0; }
+      to { transform: translateX(0); opacity: 1; }
     }
 
     .sidebar button {
@@ -35,43 +52,72 @@
       height: 40px;
       border: none;
       border-radius: 50%;
-      color: white;
       font-weight: bold;
       cursor: pointer;
+      background-color: #ccc;
+      color: white;
+      transition: transform 0.2s ease, background-color 0.3s ease;
     }
 
+    .sidebar button:hover {
+      transform: scale(1.1);
+      background-color: #007bff;
+    }
+
+    /* ===== Quiz Box Area ===== */
     .quiz-box {
       flex: 1;
       background: #ffffff;
       padding: 2rem;
-      border-radius: 12px;
-      box-shadow: 0 0 8px rgba(0, 0, 0, 0.1);
+      border-radius: 16px;
+      box-shadow: 0 4px 16px rgba(0, 0, 0, 0.12);
       display: flex;
       flex-direction: column;
       justify-content: space-between;
-      min-height: 500px;
+      min-height: 520px;
+      animation: zoomIn 0.8s ease;
+    }
+
+    @keyframes zoomIn {
+      from { transform: scale(0.95); opacity: 0; }
+      to { transform: scale(1); opacity: 1; }
     }
 
     .question-number {
-      font-size: 1.2rem;
+      font-size: 1.3rem;
       margin-bottom: 1rem;
-      color: #333;
+      color: #444;
+      font-weight: bold;
     }
 
     #question-text {
-      font-size: 1.1rem;
-      margin-bottom: 1rem;
+      font-size: 1.15rem;
+      margin-bottom: 1.5rem;
+      color: #333;
+      animation: fadeIn 1s ease-in-out;
     }
 
+    @keyframes fadeIn {
+      from { opacity: 0; }
+      to { opacity: 1; }
+    }
+
+    /* ===== Option Styles ===== */
     .options label {
       display: block;
-      margin-bottom: 0.8rem;
+      margin-bottom: 1rem;
       font-size: 1rem;
       border: 2px solid #007bff;
-      padding: 10px;
-      border-radius: 8px;
+      padding: 12px;
+      border-radius: 10px;
       cursor: pointer;
-      transition: background-color 0.2s ease;
+      transition: background-color 0.3s, transform 0.2s;
+      background: #f9f9f9;
+    }
+
+    .options label:hover {
+      background-color: #e6f0ff;
+      transform: scale(1.02);
     }
 
     input[type="radio"] {
@@ -81,8 +127,10 @@
     .options label.selected {
       background-color: #007bff;
       color: white;
+      box-shadow: 0 0 10px rgba(0, 123, 255, 0.5);
     }
 
+    /* ===== Navigation Buttons (Red Themed) ===== */
     .nav-buttons {
       margin-top: auto;
       display: flex;
@@ -92,19 +140,39 @@
     }
 
     button.nav {
-      padding: 0.8rem 1.6rem;
+      padding: 0.9rem 1.8rem;
       border: none;
-      background-color: #007bff;
+      background: linear-gradient(135deg, #e53935, #b71c1c);
       color: white;
-      border-radius: 8px;
+      border-radius: 10px;
       font-weight: bold;
       cursor: pointer;
+      transition: transform 0.3s ease, background-color 0.3s ease;
+      box-shadow: 0 5px 15px rgba(229, 57, 53, 0.3);
     }
 
     button.nav:hover {
-      background-color: #0056b3;
+      background-color: #8e0000;
+      transform: translateY(-2px);
     }
 
+    /* ===== Timer ===== */
+    #timer {
+      font-size: 20px;
+      font-weight: bold;
+      color: red;
+      margin: 20px auto;
+      text-align: center;
+      animation: pulse 1s infinite;
+    }
+
+    @keyframes pulse {
+      0% { opacity: 1; }
+      50% { opacity: 0.6; }
+      100% { opacity: 1; }
+    }
+
+    /* ===== Legend Section ===== */
     .legend {
       display: flex;
       justify-content: center;
@@ -114,7 +182,7 @@
       background: #ffffff;
       padding: 1rem;
       border-radius: 12px;
-      box-shadow: 0 0 8px rgba(0, 0, 0, 0.1);
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
       max-width: 600px;
       margin-left: auto;
       margin-right: auto;
@@ -137,6 +205,25 @@
     .answered { background-color: #007bff; }
     .skipped { background-color: #ff9800; }
     .unattempted { background-color: #ccc; }
+
+    /* ===== Responsive Design ===== */
+    @media (max-width: 768px) {
+      .container {
+        flex-direction: column;
+        align-items: center;
+      }
+
+      .sidebar {
+        grid-template-columns: repeat(5, 1fr);
+        width: 100%;
+        max-width: 400px;
+      }
+
+      .nav-buttons {
+        flex-direction: column;
+        gap: 1rem;
+      }
+    }
   </style>
 </head>
 <body>
@@ -145,7 +232,9 @@
   <script>
     const questions = {{ questions_json|safe }};
   </script>
-  <div id="timer" style="font-size: 20px; font-weight: bold; color: red; margin-bottom: 20px;"></div>
+
+  <div id="timer">⏳ 30:00</div>
+
   <div class="legend">
     <div class="legend-item">
       <span class="color-box answered"></span> Answered
@@ -159,7 +248,9 @@
   </div>
 
   <div class="container">
-    <div class="sidebar" id="sidebar"></div>
+    <div class="sidebar" id="sidebar">
+      <!-- Buttons dynamically populated -->
+    </div>
 
     <div class="quiz-box" id="quiz-box">
       <div>
@@ -168,13 +259,13 @@
         <div class="options" id="options"></div>
       </div>
       <div class="nav-buttons">
-        <button class="nav" onclick="prevQuestion()">⬅️ Previous</button>
-        <button class="nav" onclick="skipQuestion()">Skip ⏭️</button>
-        <button class="nav" id="next-btn" onclick="nextQuestion()">Next ➡️</button>
-
+        <button class="nav" onclick="prevQuestion()">⬅ Previous</button>
+        <button class="nav" onclick="skipQuestion()">Skip ⏭</button>
+        <button class="nav" id="next-btn" onclick="nextQuestion()">Next ➡</button>
       </div>
     </div>
   </div>
+
   <script src="{% static 'aptitude/script.js' %}"></script>
 </body>
 </html>

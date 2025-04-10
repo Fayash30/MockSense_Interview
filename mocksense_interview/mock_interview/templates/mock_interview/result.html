@@ -3,138 +3,152 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Mock Interview Result</title>
+  <title>Mock Interview Results</title>
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-  <script>
-    sessionStorage.removeItem("face_violations");
-    sessionStorage.removeItem("noface_violations");
-    sessionStorage.removeItem("camera_initialized");
-    sessionStorage.removeItem("camera_alerted");
-    sessionStorage.removeItem("cameraGranted");
-  </script>
   <style>
+    :root {
+      --accent: #910d0d;
+      --bg: #f7f9fc;
+      --card: #ffffff;
+      --text-dark: #333;
+      --success: #416d1d;
+      --warning: #51acc3;
+    }
+
     body {
-      font-family: 'Segoe UI', sans-serif;
-      background-color: #f4f4f4;
+      font-family: 'Poppins', sans-serif;
       margin: 0;
       padding: 0;
+      background: var(--bg);
+      color: var(--text-dark);
+    }
+
+    header {
       text-align: center;
-      animation: fadeIn 1s ease-in;
+      padding: 50px 20px 20px;
     }
 
-    h2 {
-      margin-top: 40px;
-      font-size: 2rem;
-      color: #333;
-      animation: slideDown 1s ease-in-out;
+    header h2 {
+      font-size: 2.5rem;
+      margin-bottom: 10px;
+      color: var(--accent);
     }
 
-    .score {
-      font-size: 22px;
-      font-weight: bold;
-      margin: 20px 0;
-      color: #1ee9d5;
-      animation: popIn 1s ease-out;
-    }
-
-    .chart-section {
-      display: flex;
-      flex-direction: column;
-      gap: 30px;
-      justify-content: center;
-      align-items: center;
-      padding: 20px;
-    }
-
-    @media (min-width: 768px) {
-      .chart-section {
-        flex-direction: row;
-        align-items: flex-start;
-      }
-    }
-
-    a {
-      text-decoration: none;
-      font-weight: bold;
-      color: #b30000;
-      display: inline-block;
-      margin-top: 30px;
-      transition: color 0.3s ease;
-      animation: fadeInLink 2s ease;
-    }
-
-    a:hover {
-      color: #ff0000;
-      text-decoration: underline;
-    }
-
-    .chart-container {
-      width: 90%;
-      max-width: 450px;
-      background: #fff;
-      padding: 25px;
+    .score-box {
+      background: var(--card);
+      margin: 20px auto;
+      padding: 25px 40px;
       border-radius: 12px;
-      box-shadow: 0 8px 16px rgba(0, 0, 0, 0.15);
-      animation: fadeSlide 1.2s ease-in-out;
+      max-width: 300px;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.08);
+      font-size: 1.5rem;
+      font-weight: bold;
+      color: var(--accent);
+      animation: popIn 1s ease-in-out;
+    }
+
+    .results-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+      gap: 30px;
+      padding: 40px 20px;
+      max-width: 1000px;
+      margin: auto;
+    }
+
+    .chart-card {
+      background: var(--card);
+      padding: 25px;
+      border-radius: 14px;
+      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.08);
       transition: transform 0.3s;
     }
-
-    .chart-container:hover {
-      transform: scale(1.03);
+    .chart-card:hover {
+      transform: translateY(-5px);
     }
 
+    .chart-card{
+      background-color: rgb(237, 53, 53);
+    }
     canvas {
-      animation: chartAppear 1s ease forwards;
+      margin-top: 10px;
     }
 
-    /* Animations */
-    @keyframes fadeIn {
-      from { opacity: 0; }
-      to { opacity: 1; }
+    .summary {
+      max-width: 1000px;
+      margin: 0 auto 40px;
+      background: var(--card);
+      padding: 30px;
+      border-radius: 12px;
+      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.05);
+      text-align: left;
     }
 
-    @keyframes slideDown {
-      from { transform: translateY(-30px); opacity: 0; }
-      to { transform: translateY(0); opacity: 1; }
+    .summary h3 {
+      margin-top: 0;
+      color: var(--accent);
     }
 
-    @keyframes fadeSlide {
-      from { transform: translateY(40px); opacity: 0; }
-      to { transform: translateY(0); opacity: 1; }
+    .summary ul {
+      padding-left: 20px;
+      line-height: 1.6;
+    }
+
+    .back-link {
+      text-align: center;
+      margin: 40px 0;
+    }
+
+    .back-link a {
+      text-decoration: none;
+      color: var(--accent);
+      font-weight: bold;
+      font-size: 1rem;
+      transition: color 0.3s;
+    }
+
+    .back-link a:hover {
+      color: #910d0d;
     }
 
     @keyframes popIn {
       0% { transform: scale(0.8); opacity: 0; }
       100% { transform: scale(1); opacity: 1; }
     }
-
-    @keyframes chartAppear {
-      from { opacity: 0; transform: scaleY(0.8); }
-      to { opacity: 1; transform: scaleY(1); }
-    }
   </style>
 </head>
 <body>
-  {% include 'includes/navbar.html' %}
+  <header>
+    <h2>Mock Interview Results</h2>
+    <div class="score-box">Overall Score: <span id="score">{{ result_data.overall_score }}</span>%</div>
+  </header>
 
-  <h2>Mock Interview Results</h2>
-  <p class="score">Overall Score: <span id="score">{{ result_data.overall_score }}</span>%</p>
-
-  <div class="chart-section">
-    <!-- Bar Chart -->
-    <div class="chart-container">
+  <div class="results-grid">
+    <div class="chart-card">
+      <h3>Similarity Score Breakdown</h3>
       <canvas id="resultChart"></canvas>
     </div>
-
-    <!-- Dashboard-style Pie Chart -->
-    <div class="chart-container">
+    <div class="chart-card">
+      <h3>Performance Summary</h3>
       <canvas id="dashboardPieChart"></canvas>
     </div>
   </div>
 
-  <a href="{% url 'home' %}">← Back to Home</a>
+  <div class="summary">
+    <h3>Highlights</h3>
+    <ul>
+      <li><strong>{{ correctCount }}</strong> responses were accurate (≥60% similarity).</li>
+      <li><strong>{{ incorrectCount }}</strong> responses need improvement.</li>
+      <li>Focus on refining your answers to the lower scoring questions.</li>
+      <li>Consider reviewing technical concepts related to those.</li>
+    </ul>
+  </div>
+
+  <div class="back-link">
+    <a href="{% url 'home' %}">← Back to Home</a>
+  </div>
+
   <script>
-    // Animate overall score (counter style)
     const scoreElement = document.getElementById("score");
     const finalScore = parseInt(scoreElement.innerText);
     let currentScore = 0;
@@ -150,69 +164,50 @@
       }
     }, 20);
 
-    // Similarity Scores Data
-    const ctx = document.getElementById('resultChart').getContext('2d');
     const similarityScores = {{ result_data.similarity_scores|safe }};
     const labels = ["Question 1", "Question 2", "Question 3", "Question 4", "Question 5"];
 
     // Bar Chart
-    new Chart(ctx, {
+    new Chart(document.getElementById('resultChart').getContext('2d'), {
       type: 'bar',
       data: {
         labels: labels,
         datasets: [{
-          label: 'Similarity Score (%)',
+          label: 'Similarity (%)',
           data: similarityScores,
-          backgroundColor: 'rgba(233, 30, 99, 0.6)',
-          borderColor: 'rgba(233, 30, 99, 1)',
+          backgroundColor: 'rgb(120, 167, 192)',
+          borderColor: 'rgb(3, 26, 39))',
           borderWidth: 2,
           borderRadius: 6
         }]
       },
       options: {
         responsive: true,
-        animation: {
-          duration: 1000,
-          easing: 'easeOutBounce'
-        },
         scales: {
           y: {
             beginAtZero: true,
             max: 100,
             ticks: {
-              callback: function(value) {
-                return value + "%";
-              }
-            }
-          }
-        },
-        plugins: {
-          legend: {
-            labels: {
-              color: '#444',
-              font: {
-                weight: 'bold'
-              }
+              callback: val => val + "%"
             }
           }
         }
       }
     });
 
-    // Pie Chart (Correct vs Incorrect Answers)
     const correctCount = similarityScores.filter(score => score >= 60).length;
     const incorrectCount = similarityScores.length - correctCount;
 
-    const dashboardCtx = document.getElementById('dashboardPieChart').getContext('2d');
-    new Chart(dashboardCtx, {
+    // Pie Chart
+    new Chart(document.getElementById('dashboardPieChart').getContext('2d'), {
       type: 'doughnut',
       data: {
-        labels: ['Correct Answers', 'Needs Improvement'],
+        labels: ['Correct', 'Needs Improvement'],
         datasets: [{
           data: [correctCount, incorrectCount],
           backgroundColor: [
-            'rgba(76, 175, 80, 0.7)', // green
-            'rgba(255, 87, 34, 0.7)'  // orange
+            'rgba(76, 175, 80, 0.7)',
+            'rgba(255, 87, 34, 0.7)'
           ],
           borderColor: [
             'rgba(76, 175, 80, 1)',
@@ -222,26 +217,14 @@
         }]
       },
       options: {
-        responsive: true,
         cutout: '60%',
-        animation: {
-          animateRotate: true,
-          duration: 1500
-        },
         plugins: {
           legend: {
-            position: 'bottom',
-            labels: {
-              font: {
-                weight: 'bold'
-              }
-            }
+            position: 'bottom'
           },
           tooltip: {
             callbacks: {
-              label: function(context) {
-                return `${context.label}: ${context.parsed} responses`;
-              }
+              label: ctx => `${ctx.label}: ${ctx.parsed}`
             }
           }
         }

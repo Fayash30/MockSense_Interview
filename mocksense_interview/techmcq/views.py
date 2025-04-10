@@ -10,11 +10,9 @@ from django.views.decorators.http import require_GET, require_POST
 with open("techmcq/static/techmcq/sde_mcq_275_unique.json") as f:
     all_questions = json.load(f)
 
-@require_GET
 def quiz_view(request):
     return render(request, 'techmcq/index.html', { "proctored": True })
 
-@require_GET
 def quiz_home(request):
     return render(request, 'techmcq/instructions.html')
 

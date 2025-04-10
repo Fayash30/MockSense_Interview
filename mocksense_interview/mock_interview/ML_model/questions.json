@@ -1,9 +1,9 @@
 {
     "questions": [
-        "Explain stacks in computer programming.",
-        "Why use a web framework?",
-        "Why is Infrastructure as Code important in DevOps?",
-        "What is a SPA (Single Page Application)?",
-        "Explain how JVM works."
+        "Explain the MEAN stack architecture.",
+        "Explain JavaScript data types.",
+        "What are Threads?",
+        "When to use 'tuple' over 'list' in Python?",
+        "What is polymorphism in Java?"
     ]
 }

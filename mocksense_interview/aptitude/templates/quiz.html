@@ -2,100 +2,163 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Aptitude Quiz | Instructions</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            background-color: #f9f9f9;
-            margin: 0;
-            padding: 0;
-        }
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Aptitude Quiz | Instructions</title>
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
 
-        .container {
-            width: 60%;
-            margin: 50px auto;
-            background: white;
-            padding: 30px;
-            border-radius: 10px;
-            box-shadow: 0 0 20px rgba(0,0,0,0.1);
-        }
+  <style>
+    body {
+      font-family: 'Roboto', sans-serif;
+      background: white;
+      color: #fff;
+      margin: 0;
+      padding: 0;
+      overflow-x: hidden;
+    }
 
-        h1 {
-            color: #4CAF50;
-            margin-bottom: 20px;
-        }
+    .container {
+      width: 60%;
+      margin: 50px auto;
+      background: rgba(255, 255, 255, 0.95);
+      padding: 30px;
+      border-radius: 15px;
+      box-shadow: 0 0 25px rgba(255, 0, 0, 0.3);
+      animation: fadeIn 1s ease-in-out;
+      color: #111;
+    }
 
-        ul {
-            text-align: left;
-            margin: 20px auto;
-            font-size: 16px;
-        }
+    h1 {
+      color: #d71919;
+      font-family: 'Poppins', sans-serif;
+      text-align: center;
+      margin-bottom: 20px;
+      font-size: 2rem;
+      animation: slideInDown 1s ease-in-out;
+    }
 
-        button {
-            background: #4CAF50;
-            color: white;
-            padding: 15px 30px;
-            font-size: 18px;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-            margin-top: 20px;
-        }
+    ul {
+      list-style-type: none;
+      padding-left: 0;
+      font-size: 17px;
+      line-height: 1.8;
+      color: #000;
+    }
 
-        button:hover {
-            background: #45a049;
-        }
+    ul li::before {
+      content: '👉';
+      margin-right: 10px;
+      color: #e50914;
+      font-size: 1.2em;
+    }
 
-        @media (max-width: 768px) {
-            .container {
-                width: 90%;
-            }
-        }
-    </style>
+    ul li strong {
+      color: #000;
+    }
+
+    ul ul {
+      margin-left: 2rem;
+      margin-top: 0.5rem;
+    }
+
+    ul ul li::before {
+      content: '✅';
+      margin-right: 10px;
+      color: #28a745;
+    }
+
+    p {
+      font-size: 16px;
+      color: #d60000;
+      background: #ffeaea;
+      padding: 10px;
+      border-left: 5px solid red;
+      border-radius: 5px;
+      animation: fadeIn 2s ease-in-out;
+    }
+
+    button {
+      background: linear-gradient(45deg, #ff0000, #000);
+      color: white;
+      padding: 15px 30px;
+      font-size: 1.1rem;
+      font-weight: bold;
+      border: none;
+      border-radius: 10px;
+      cursor: pointer;
+      margin-top: 20px;
+      box-shadow: 0 5px 15px rgba(255, 0, 0, 0.4);
+      transition: all 0.3s ease-in-out;
+      display: block;
+      margin-left: auto;
+      margin-right: auto;
+    }
+
+    button:hover {
+      transform: scale(1.05);
+      background: linear-gradient(45deg, #ff4d4d, #1a1a1a);
+      box-shadow: 0 8px 20px rgba(255, 0, 0, 0.6);
+    }
+
+    @media (max-width: 768px) {
+      .container {
+        width: 90%;
+      }
+    }
+
+    /* Animations */
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    @keyframes slideInDown {
+      from { transform: translateY(-30px); opacity: 0; }
+      to { transform: translateY(0); opacity: 1; }
+    }
+  </style>
 </head>
 <body>
-    {% include 'includes/navbar.html' %}
-    <div class="container">
-        <h1>🧠 Aptitude Test Instructions</h1>
-        <ul>
-          <li>📋 <strong>Total Questions:</strong> 20 questions in total, divided as follows:</li>
-          <ul style="margin-left: 1.5rem;">
-            <li>🧠 5 Logical Reasoning Questions</li>
-            <li>📊 5 Quantitative Aptitude Questions</li>
-            <li>🗣️ 5 Verbal Ability Questions</li>
-            <li>🧩 5 General Reasoning Questions</li>
-          </ul>
-      
-          <li>⏱️ <strong>Time Limit:</strong> You will have <strong>30 minutes</strong> to complete the test.</li>
-          <li>🚫 <strong>Tab Switch Violation:</strong> Navigating away from the test window will be recorded as a violation.</li>
-          <li>📷 <strong>Camera Monitoring:</strong></li>
-          <ul style="margin-left: 1.5rem;">
-            <li>🚫 No face detected during the test = Violation</li>
-            <li>🚫 Multiple faces detected = Violation</li>
-          </ul>
-          <li>🔒 <strong>Cheating Prevention:</strong></li>
-          <ul style="margin-left: 1.5rem;">
-            <li>🚫 Copy/Paste is strictly prohibited</li>
-            <li>🚫 Attempting to take screenshots or steal content = Violation</li>
-          </ul>
-      
-          <li>📌 <strong>Submission:</strong> The test will auto-submit when time is up. You may also submit manually when you're done.</li>
-          <li>📊 <strong>Scoring:</strong> Results will be shown immediately after submission.</li>
-        </ul>
-        
-        <p style="color: red; font-weight: bold; margin-top: 1rem;">
-            ⚠️ Please ensure you're in a quiet environment with your camera enabled and stable internet connection before starting the test.
-          </p>
-          
-        <form method="POST">
-          {% csrf_token %}
-          <button type="submit" style="padding: 0.75rem 1.5rem; font-size: 1rem; font-weight: bold; border: none; background-color: #28a745; color: white; border-radius: 8px; cursor: pointer;">
-            Start Test 🚀
-          </button>
-        </form>
-      </div>
-      
+  {% include 'includes/navbar.html' %}
+
+  <div class="container">
+    <h1>🧠 Aptitude Test Instructions</h1>
+    <ul>
+      <li><strong>Total Questions:</strong> 20 questions in total, divided as follows:</li>
+      <ul>
+        <li>🧠 Logical Reasoning Questions (5)</li>
+        <li>📊 Quantitative Aptitude Questions (5)</li>
+        <li>🗣 Verbal Ability Questions (5)</li>
+        <li>🧩 General Reasoning Questions (5)</li>
+      </ul>
+
+      <li>⏱ <strong>Time Limit:</strong> You will have <strong>30 minutes</strong> to complete the test.</li>
+      <li>🚫 <strong>Tab Switch Violation:</strong> Navigating away from the test window will be recorded as a violation.</li>
+      <li>📷 <strong>Camera Monitoring:</strong></li>
+      <ul>
+        <li>🚫 No face detected during the test = Violation</li>
+        <li>🚫 Multiple faces detected = Violation</li>
+      </ul>
+      <li>🔒 <strong>Cheating Prevention:</strong></li>
+      <ul>
+        <li>🚫 Copy/Paste is strictly prohibited</li>
+        <li>🚫 Attempting to take screenshots or steal content = Violation</li>
+      </ul>
+
+      <li>📌 <strong>Submission:</strong> The test will auto-submit when time is up. You may also submit manually when you're done.</li>
+      <li>📊 <strong>Scoring:</strong> Results will be shown immediately after submission.</li>
+    </ul>
+
+    <p>
+      ⚠ Please ensure you're in a quiet environment with your camera enabled and a stable internet connection before starting the test.
+    </p>
+
+    <form method="POST">
+      {% csrf_token %}
+      <button type="submit">
+        Start Test 🚀
+      </button>
+    </form>
+  </div>
 </body>
 </html>

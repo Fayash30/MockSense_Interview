@@ -7,211 +7,213 @@
   <title>Mock Sense Interview</title>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
   <style>
-    :root {
-      --bg: #f9f9f9;
-      --text: #0a0a23;
-      --accent: #e60023;
-      --glass-bg: rgba(255, 255, 255, 0.25);
-      --glass-border: rgba(255, 255, 255, 0.2);
-    }
 
-    [data-theme="dark"] {
-      --bg: #1e1e1e;
-      --text: #ffffff;
-      --glass-bg: rgba(255, 255, 255, 0.1);
-      --glass-border: rgba(255, 255, 255, 0.2);
-    }
+:root {
+  --bg: #f9f9f9;
+  --text: #0a0a23;
+  --accent: #e60023;
+  --glass-bg: rgba(255, 255, 255, 0.25);
+  --glass-border: rgba(255, 255, 255, 0.2);
+  --modal-bg: #ffffff;
+  --modal-text: #0a0a23;
+}
 
-    body {
-      margin: 0;
-      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-      background: var(--bg);
-      color: var(--text);
-      transition: background 0.3s, color 0.3s;
-    }
+[data-theme="dark"] {
+  --bg: #1e1e1e;
+  --text: #ffffff;
+  --glass-bg: rgba(255, 255, 255, 0.1);
+  --glass-border: rgba(255, 255, 255, 0.2);
+  --modal-bg: #2b2b2b;
+  --modal-text: #ffffff;
+}
 
-    header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      padding: 20px 60px;
-      background: var(--glass-bg);
-      backdrop-filter: blur(12px);
-      -webkit-backdrop-filter: blur(12px);
-      border-bottom: 1px solid var(--glass-border);
-      position: sticky;
-      top: 0;
-      z-index: 1000;
-    }
+body {
+  margin: 0;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  transition: background 0.3s, color 0.3s;
+}
 
-    .logo {
-      display: flex;
-      align-items: center;
-      font-weight: bold;
-      font-size: 22px;
-    }
+header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 20px 60px;
+  background: var(--glass-bg);
+  backdrop-filter: blur(12px);
+  border-bottom: 1px solid var(--glass-border);
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+}
 
-    .logo img {
-      width: 80px;
-      margin-right: 10px;
-    }
+.logo {
+  display: flex;
+  align-items: center;
+  font-weight: bold;
+  font-size: 22px;
+}
 
-    nav {
-      display: flex;
-      gap: 25px;
-    }
+.logo img {
+  width: 80px;
+  margin-right: 10px;
+}
 
-    nav a {
-      text-decoration: none;
-      color: var(--text);
-      font-weight: 500;
-      font-size: 16px;
-      cursor: pointer;
-    }
+nav {
+  display: flex;
+  gap: 50px;
+}
 
-    .auth-buttons {
-      display: flex;
-      gap: 15px;
-      align-items: center;
-    }
+nav a {
+  text-decoration: none;
+  color: var(--text);
+  font-weight: 540;
+  font-size: 17px;
+  cursor: pointer;
+}
 
-    .auth-buttons button {
-      padding: 10px 20px;
-      border-radius: 30px;
-      font-weight: bold;
-      border: none;
-      cursor: pointer;
-      font-size: 15px;
-    }
+.auth-buttons {
+  display: flex;
+  gap: 15px;
+  align-items: center;
+}
 
-    .start-btn {
-      background: var(--accent);
-      color: white;
-    }
+.auth-buttons button {
+  padding: 10px 20px;
+  border-radius: 30px;
+  font-weight: bold;
+  font-size: 15px;
+  border: none;
+  cursor: pointer;
+}
 
-    .start-btn:hover {
-      background: #c4001d;
-    }
+.start-btn {
+  background: var(--accent);
+  color: white;
+}
 
-    .sign-in-btn {
-      background: transparent;
-      border: 2px solid var(--accent);
-      color: var(--accent);
-    }
+.start-btn:hover {
+  background: #c4001d;
+}
 
-    .sign-in-btn:hover {
-      background: var(--accent);
-      color: white;
-    }
+.sign-in-btn {
+  background: transparent;
+  border: 2px solid var(--accent);
+  color: var(--accent);
+}
 
-    .theme-toggle {
-      font-size: 20px;
-      cursor: pointer;
-      border: none;
-      background: none;
-      color: var(--text);
-    }
+.sign-in-btn:hover {
+  background: var(--accent);
+  color: white;
+}
 
-    .hero {
-      display: flex;
-      flex-wrap: wrap;
-      align-items: center;
-      justify-content: space-between;
-      padding: 80px 60px;
-      background: var(--glass-bg);
-      backdrop-filter: blur(20px);
-      border-radius: 20px;
-      margin: 30px;
-      border: 1px solid var(--glass-border);
-      transition: 0.3s;
-    }
+.theme-toggle {
+  font-size: 20px;
+  cursor: pointer;
+  background: none;
+  border: none;
+  color: var(--text);
+}
 
-    .hero-text {
-      max-width: 600px;
-    }
+.hero {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  padding: 80px 60px;
+  background: var(--glass-bg);
+  border: 1px solid var(--glass-border);
+  border-radius: 20px;
+  margin: 30px;
+  backdrop-filter: blur(20px);
+}
 
-    .hero-text h1 {
-      font-size: 3rem;
-      margin-bottom: 20px;
-      line-height: 1.3;
-    }
+.hero-text {
+  max-width: 600px;
+}
 
-    .hero-text h1 span {
-      color: var(--accent);
-    }
+.hero-text h1 {
+  font-size: 3rem;
+  margin-bottom: 20px;
+  line-height: 1.3;
+}
 
-    .hero-text p {
-      font-size: 1.2rem;
-      margin-bottom: 30px;
-      color: #555;
-    }
+.hero-text h1 span {
+  color: var(--accent);
+}
 
-    .hero-buttons {
-      display: flex;
-      gap: 20px;
-      flex-wrap: wrap;
-    }
+.hero-text p {
+  font-size: 1.2rem;
+  margin-bottom: 30px;
+  color: #555;
+}
 
-    .hero-buttons button {
-      padding: 12px 26px;
-      border-radius: 25px;
-      font-size: 16px;
-      font-weight: 600;
-      cursor: pointer;
-      transition: 0.3s;
-      border: none;
-    }
+.hero-buttons {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px;
+}
 
-    .hero-buttons .start {
-      background: var(--accent);
-      color: white;
-    }
+.hero-buttons button {
+  padding: 12px 26px;
+  border-radius: 25px;
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: 0.3s;
+  border: none;
+}
 
-    .hero-buttons .start:hover {
-      background: #c4001d;
-    }
+.hero-buttons .start {
+  background: var(--accent);
+  color: white;
+}
 
-    .hero-buttons .learn {
-      background: transparent;
-      color: var(--text);
-      border: 2px solid var(--text);
-    }
+.hero-buttons .start:hover {
+  background: #c4001d;
+}
 
-    .hero-buttons .learn:hover {
-      background: var(--text);
-      color: white;
-    }
+.hero-buttons .learn {
+  background: transparent;
+  color: var(--text);
+  border: 2px solid var(--text);
+}
 
-    .review {
-      margin-top: 40px;
-      display: flex;
-      align-items: center;
-      gap: 15px;
-    }
+.hero-buttons .learn:hover {
+  background: var(--text);
+  color: white;
+}
 
-    .review img {
-      width: 40px;
-      height: 40px;
-      border-radius: 50%;
-      object-fit: cover;
-    }
+.review {
+  margin-top: 40px;
+  display: flex;
+  align-items: center;
+  gap: 15px;
+}
 
-    .review span {
-      font-size: 0.95rem;
-      color: #888;
-    }
+.review img {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  object-fit: cover;
+}
 
-    section {
-      padding: 80px 60px;
-      margin: 30px;
-      border-radius: 20px;
-      background: var(--glass-bg);
-      border: 1px solid var(--glass-border);
-      backdrop-filter: blur(15px);
-      transition: 0.3s;
-    }
+.review span {
+  font-size: 0.95rem;
+  color: #888;
+}
 
-    .user-info {
+section {
+  padding: 80px 60px;
+  margin: 30px;
+  background: var(--glass-bg);
+  border: 1px solid var(--glass-border);
+  border-radius: 20px;
+  backdrop-filter: blur(15px);
+}
+
+.user-info {
   display: flex;
   align-items: center;
   gap: 10px;
@@ -225,69 +227,117 @@
   object-fit: cover;
 }
 
-    .section-button {
-      margin-top: 20px;
-      padding: 12px 24px;
-      font-size: 16px;
-      font-weight: bold;
-      border-radius: 25px;
-      border: none;
-      cursor: pointer;
-      background: var(--accent);
-      color: white;
-      transition: background 0.3s;
-    }
+.section-button {
+  margin-top: 20px;
+  padding: 12px 24px;
+  font-size: 16px;
+  font-weight: bold;
+  border-radius: 25px;
+  border: none;
+  cursor: pointer;
+  background: var(--accent);
+  color: white;
+}
 
-    .section-button:hover {
-      background: #c4001d;
-    }
+.section-button:hover {
+  background: #c4001d;
+}
 
-    .disabled-section {
-      opacity: 0.6;
-      pointer-events: none;
-    }
+footer {
+  text-align: center;
+  padding: 20px;
+  background: white;
+  font-size: 0.9rem;
+  color: #888;
+  box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.05);
+  margin-top: 50px;
+}
 
-    .disabled-button {
-      margin-top: 20px;
-      padding: 12px 24px;
-      font-size: 16px;
-      font-weight: bold;
-      border-radius: 25px;
-      border: 2px dashed gray;
-      background: transparent;
-      color: gray;
-      cursor: not-allowed;
-    }
+/* Modal */
+.modal {
+  display: none;
+  position: fixed;
+  z-index: 10000;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  overflow: auto;
+  background-color: rgba(0, 0, 0, 0.6);
+  animation: fadeInBg 0.4s ease-in-out;
+}
 
-    footer {
-      text-align: center;
-      padding: 20px;
-      background: white;
-      font-size: 0.9rem;
-      color: #888;
-      box-shadow: 0 -2px 10px rgba(0,0,0,0.05);
-      margin-top: 50px;
-    }
+.modal-content {
+  background-color: var(--modal-bg);
+  color: var(--modal-text);
+  margin: 10% auto;
+  padding: 30px;
+  border: 1px solid var(--glass-border);
+  width: 80%;
+  max-width: 600px;
+  border-radius: 20px;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
+  animation: fadeIn 0.3s ease-in-out;
+}
 
-    @media screen and (max-width: 768px) {
-      .hero {
-        flex-direction: column;
-        padding: 40px 20px;
-        text-align: center;
-      }
+.modal-content h2, .modal-content h3 {
+  margin-top: 0;
+  color: var(--accent);
+}
 
-      header {
-        flex-direction: column;
-        gap: 10px;
-        padding: 20px;
-      }
+.modal-content p, .modal-content ul {
+  line-height: 1.6;
+}
 
-      nav {
-        flex-direction: column;
-        gap: 10px;
-        align-items: center;
-      }
-    }
+.modal-content ul {
+  padding-left: 20px;
+}
+
+.close-btn {
+  float: right;
+  font-size: 24px;
+  cursor: pointer;
+  color: var(--accent);
+  transition: transform 0.2s;
+}
+
+.close-btn:hover {
+  transform: scale(1.2);
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(-20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Responsive */
+@media screen and (max-width: 768px) {
+  .hero {
+    flex-direction: column;
+    padding: 40px 20px;
+    text-align: center;
+  }
+
+  header {
+    flex-direction: column;
+    gap: 10px;
+    padding: 20px;
+  }
+
+  nav {
+    flex-direction: column;
+    gap: 10px;
+    align-items: center;
+  }
+}
+
+
   </style>
 </head>
 <body data-theme="light">
@@ -302,14 +352,12 @@
       <a onclick="scrollToWithOffset('assessment')">Online Assessment</a>
       <a onclick="scrollToWithOffset('gd')">Group Discussion</a>
       <a onclick="scrollToWithOffset('technical')">Technical Interview</a>
-      <a onclick="scrollToWithOffset('results')">Results and Feedback</a>
     </nav>
 
     <div class="auth-buttons">
       <button class="theme-toggle" id="themeToggle" title="Toggle theme">
         <i class="fas fa-moon"></i>
       </button>
-    
       {% if user.is_authenticated %}
         <div class="user-info">
           <img src="{% static 'assets/User.png' %}" alt="user" class="user-icon" />
@@ -320,16 +368,14 @@
           <button class="sign-in-btn" type="submit">Logout</button>
         </form>
       {% else %}
-      <form action="{% url 'login' %}">
-        <button class="sign-in-btn" type="submit">Login</button>
-    </form>
-    <form action="{% url 'register' %}">
-      <button class="start-btn" type="submit">Sign Up</button>
-  </form>
+        <form action="{% url 'login' %}">
+          <button class="sign-in-btn" type="submit">Login</button>
+        </form>
+        <form action="{% url 'register' %}">
+          <button class="start-btn" type="submit">Sign Up</button>
+        </form>
       {% endif %}
     </div>
-    
-    
   </header>
 
   <section class="hero">
@@ -338,7 +384,7 @@
       <p>Ace any job interview with unlimited mock interviews, tailored feedback, and an interactive interview simulator.</p>
       <div class="hero-buttons">
         <button class="start" onclick="scrollToWithOffset('assessment')">Start Practicing Today</button>
-        <button class="learn">Learn More</button>
+        <button class="learn" onclick="openModal()">Learn More</button>
       </div>
       <div class="review">
         <img src="{% static 'assets/Sowmiya.png' %}" alt="Sowmiya" />
@@ -352,14 +398,14 @@
 
   <section id="assessment">
     <h2>Online Assessment</h2>
-    <p>This section will guide you through mock aptitude tests and coding rounds with instant results and hints.</p>
+    <p>This section will guide you through mock aptitude tests and techical questions with instant results and hints.</p>
     <a href="{% url 'quiz_view' %}" class="section-button">Start Quiz</a>
   </section>
 
   <section id="gd">
     <h2>Group Discussion</h2>
     <p>Practice structured group discussions with AI and real-time suggestions to improve speaking skills.</p>
-    <a href=" {% url 'discussion' %}" class="section-button">Start Test</a>
+    <a href="{% url 'discussion' %}" class="section-button">Start Test</a>
   </section>
 
   <section id="technical">
@@ -368,15 +414,27 @@
     <a href="{% url 'mock_interview_index' %}" class="section-button">Start Test</a>
   </section>
 
-  <!-- <section id="results" class="disabled-section">
-    <h2>Results and Feedback</h2>
-    <p>Receive detailed performance feedback and areas of improvement after every session.</p>
-    <button class="disabled-button">View Full Score</button>
-  </section> -->
-
   <footer>
     &copy; 2025 Mock Sense Interview. All rights reserved.
   </footer>
+
+  <!-- Modal HTML -->
+  <div id="learnMoreModal" class="modal">
+    <div class="modal-content">
+      <span class="close-btn" onclick="closeModal()">&times;</span>
+      <h2>About This App</h2>
+      <p>
+        <strong>Mock Sense Interview</strong> is an innovative web application created in 2025 to help students prepare effectively for job placements and interviews.
+        Designed by final-year students from <strong>Karpagam Institute of Technology</strong>, this platform replicates real-world interview scenarios through AI-powered tools and interactive simulations.
+      </p>
+      <p>
+        The app includes online aptitude & coding assessments, AI-based group discussions with emotion tracking, and technical interview simulations tailored to the user’s domain.
+        With instant feedback and insightful analytics, this tool boosts communication, technical, and critical thinking skills.
+      </p>
+      <h3>Creators:</h3>
+      <p><strong>Mohamed Fayash, Sowmiya, Ragaswathi, Sanmugam</strong> from Karpagam Institute of Technology.</p>
+    </div>
+  </div>
 
   <script>
     const toggle = document.getElementById('themeToggle');
@@ -399,6 +457,21 @@
       const yOffset = -80;
       const y = element.getBoundingClientRect().top + window.pageYOffset + yOffset;
       window.scrollTo({ top: y, behavior: 'smooth' });
+    }
+
+    function openModal() {
+      document.getElementById('learnMoreModal').style.display = 'block';
+    }
+
+    function closeModal() {
+      document.getElementById('learnMoreModal').style.display = 'none';
+    }
+
+    window.onclick = function(event) {
+      const modal = document.getElementById('learnMoreModal');
+      if (event.target == modal) {
+        closeModal();
+      }
     }
   </script>
 </body>
