@@ -1,3 +1,6 @@
+const totalTime = 1 * 60; // 30 minutes in seconds
+let timeLeft = totalTime;
+let timerInterval;
 let questions = [];
 let currentIndex = 0;
 let answers = {};
@@ -8,6 +11,7 @@ fetch("/techmcq/get-questions/")
   .then(data => {
     questions = data;
     generateSidebar();
+    startTimer();
     renderQuestion();
   });
 
@@ -130,7 +134,52 @@ function submitQuiz() {
   .then(response => response.json())
   .then(data => {
     if (data.redirect_url) {
+      clearInterval(timerInterval);
       window.location.href = data.redirect_url;
     }
   });
+}
+
+function forceSubmitQuiz() {
+  // Fill unanswered questions as null
+  for (let i = 0; i < questions.length; i++) {
+    if (!(i in answers)) {
+      answers[i] = null;
+    }
+  }
+
+  fetch('/techmcq/submit-answers/', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+      answers: answers,
+      questions: questions
+    })
+  })
+    .then(res => res.json())
+    .then(data => {
+      if (data.redirect_url) {
+        window.location.href = data.redirect_url;
+      }
+    });
+}
+
+
+function startTimer() {
+  const timerDisplay = document.getElementById("timer");
+
+  timerInterval = setInterval(() => {
+    const minutes = Math.floor(timeLeft / 60);
+    const seconds = timeLeft % 60;
+
+    timerDisplay.textContent = `⏳ Time Left: ${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+
+    if (timeLeft <= 0) {
+      clearInterval(timerInterval);
+      alert("⏰ Time is up! Answers Submitted...");
+      forceSubmitQuiz(); // triggers auto-submit
+    }
+
+    timeLeft--;
+  }, 1000);
 }

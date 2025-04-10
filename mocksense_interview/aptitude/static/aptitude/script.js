@@ -1,3 +1,6 @@
+const totalTime = 1 * 60; // 30 minutes in seconds
+let timeLeft = totalTime;
+let timerInterval;
 let questions = [];
 let currentQuestionIndex = 0;
 let userAnswers = [];
@@ -10,6 +13,7 @@ fetch("/apti/get-questions/")
     questions = data;
     userAnswers = new Array(questions.length).fill(null);
     renderSidebar();
+    startTimer();
     showQuestion();
   });
 
@@ -140,7 +144,52 @@ function submitQuiz() {
     .then(res => res.json())
     .then(data => {
       if (data.redirect_url) {
+        clearInterval(timerInterval);
         window.location.href = data.redirect_url;
       }
     });
+}
+
+function forceSubmitQuiz() {
+  // Fill unanswered questions as null
+  for (let i = 0; i < questions.length; i++) {
+    if (!userAnswers[i]) {
+      userAnswers[i] = null;
+    }
+  }
+
+  fetch('/apti/submit-answers/', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+      answers: userAnswers,
+      questions: questions
+    })
+  })
+    .then(res => res.json())
+    .then(data => {
+      if (data.redirect_url) {
+        window.location.href = data.redirect_url;
+      }
+    });
+}
+
+
+function startTimer() {
+  const timerDisplay = document.getElementById("timer");
+
+  timerInterval = setInterval(() => {
+    const minutes = Math.floor(timeLeft / 60);
+    const seconds = timeLeft % 60;
+
+    timerDisplay.textContent = `⏳ Time Left: ${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+
+    if (timeLeft <= 0) {
+      clearInterval(timerInterval);
+      alert("⏰ Time is up! Answers Submitted...");
+      forceSubmitQuiz(); // triggers auto-submit
+    }
+
+    timeLeft--;
+  }, 1000);
 }

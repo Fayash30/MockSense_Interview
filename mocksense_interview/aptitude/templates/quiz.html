@@ -60,16 +60,42 @@
     <div class="container">
         <h1>🧠 Aptitude Test Instructions</h1>
         <ul>
-            <li>✅ 20 questions total (5 each from Logical, Quantitative, Verbal, Reasoning).</li>
-            <li>🚫 No face detected = violation.</li>
-            <li>🚫 Multiple faces detected = violation.</li>
-            <li>🚫 Switching tabs = violation.</li>
-            <li>🚫 Copy/Paste or content stealing = violation.</li>
+          <li>📋 <strong>Total Questions:</strong> 20 questions in total, divided as follows:</li>
+          <ul style="margin-left: 1.5rem;">
+            <li>🧠 5 Logical Reasoning Questions</li>
+            <li>📊 5 Quantitative Aptitude Questions</li>
+            <li>🗣️ 5 Verbal Ability Questions</li>
+            <li>🧩 5 General Reasoning Questions</li>
+          </ul>
+      
+          <li>⏱️ <strong>Time Limit:</strong> You will have <strong>30 minutes</strong> to complete the test.</li>
+          <li>🚫 <strong>Tab Switch Violation:</strong> Navigating away from the test window will be recorded as a violation.</li>
+          <li>📷 <strong>Camera Monitoring:</strong></li>
+          <ul style="margin-left: 1.5rem;">
+            <li>🚫 No face detected during the test = Violation</li>
+            <li>🚫 Multiple faces detected = Violation</li>
+          </ul>
+          <li>🔒 <strong>Cheating Prevention:</strong></li>
+          <ul style="margin-left: 1.5rem;">
+            <li>🚫 Copy/Paste is strictly prohibited</li>
+            <li>🚫 Attempting to take screenshots or steal content = Violation</li>
+          </ul>
+      
+          <li>📌 <strong>Submission:</strong> The test will auto-submit when time is up. You may also submit manually when you're done.</li>
+          <li>📊 <strong>Scoring:</strong> Results will be shown immediately after submission.</li>
         </ul>
+        
+        <p style="color: red; font-weight: bold; margin-top: 1rem;">
+            ⚠️ Please ensure you're in a quiet environment with your camera enabled and stable internet connection before starting the test.
+          </p>
+          
         <form method="POST">
-            {% csrf_token %}
-            <button type="submit">Start Test 🚀</button>
+          {% csrf_token %}
+          <button type="submit" style="padding: 0.75rem 1.5rem; font-size: 1rem; font-weight: bold; border: none; background-color: #28a745; color: white; border-radius: 8px; cursor: pointer;">
+            Start Test 🚀
+          </button>
         </form>
-    </div>
+      </div>
+      
 </body>
 </html>
