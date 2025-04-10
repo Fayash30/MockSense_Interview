@@ -1,113 +1,103 @@
 import json
 import random
+import os
 from django.shortcuts import render, redirect
 from django.http import JsonResponse
-import os
+from django.utils.safestring import mark_safe
+from django.views.decorators.csrf import csrf_exempt
 
-# Load questions from JSON
+# Load questions from JSON file
 def load_questions():
     try:
-        
-        base_dir = os.path.dirname(os.path.abspath(__file__))  # Get current app directory
-        file_path = os.path.join(base_dir, "data", "questions.json")  # Construct full path
-        
+        base_dir = os.path.dirname(os.path.abspath(__file__))
+        file_path = os.path.join(base_dir, "data", "questions.json")
         with open(file_path, "r", encoding="utf-8") as file:
             return json.load(file)
     except (FileNotFoundError, json.JSONDecodeError):
         return None
 
-# Get random questions based on difficulty levels
-def get_random_questions(data, category):
-    easy_qns = random.sample(data[category]["Easy"], min(3, len(data[category]["Easy"])))
-    medium_qns = random.sample(data[category]["Medium"], min(4, len(data[category]["Medium"])))
-    hard_qns = random.sample(data[category]["Hard"], min(3, len(data[category]["Hard"])))
+def get_mixed_category_questions(data):
+    selected_questions = []
+    for category in ["Logical", "Quants", "Verbal", "Reasoning"]:
+        all_levels = data[category]["Easy"] + data[category]["Medium"] + data[category]["Hard"]
+        selected_questions += random.sample(all_levels, min(5, len(all_levels)))
+    random.shuffle(selected_questions)
+    return selected_questions
 
-    all_questions = easy_qns + medium_qns + hard_qns
-    random.shuffle(all_questions)
-    return all_questions
-
-# View to handle quiz display
+# Initial quiz view
 def quiz_view(request):
+    if request.method == "POST":
+        return redirect("quiz_questions")
+    return render(request, "quiz.html")
+
+# Quiz page UI loader
+def quiz_questions(request):
+    return render(request, "quiz_questions.html", {"proctored" : True})
+
+# ✅ Serve questions via AJAX
+def get_questions(request):
     data = load_questions()
     if not data:
-        return render(request, "quiz.html", {"error": "Error loading questions!"})
+        return JsonResponse({"error": "Could not load questions."}, status=500)
 
+    questions = get_mixed_category_questions(data)
+
+    request.session["questions"] = questions  # ✅ Save full questions (with answer)
+
+    # 🔒 Send copy to frontend without answers
+    frontend_questions = []
+    for q in questions:
+        q_copy = q.copy()
+        q_copy.pop("answer", None)
+        frontend_questions.append(q_copy)
+
+    request.session["answers"] = []  # reset previous answers
+    return JsonResponse(frontend_questions, safe=False)
+
+# ✅ Accept submitted answers and redirect
+@csrf_exempt
+def submit_answers(request):
     if request.method == "POST":
-        selected_category = request.POST.get("category")
-        if selected_category not in data:
-            return render(request, "quiz.html", {"error": "Invalid category selected!"})
+        try:
+            payload = json.loads(request.body)
+            user_answers = payload.get("answers", [])
 
-        questions = get_random_questions(data, selected_category)
-        request.session["questions"] = questions
-        request.session["category"] = selected_category
-        request.session["score"] = 0
+            session_questions = request.session.get("questions", [])
+            combined = []
 
-        return redirect("quiz_questions")
-
-    return render(request, "quiz.html", {"categories": list(data.keys())})
-
-def quiz_questions(request):
-    questions = request.session.get("questions", [])
-    current_question_index = request.session.get("current_question_index", 0)
-
-    if current_question_index >= len(questions):
-        return redirect("quiz_result")
-
-    current_question = questions[current_question_index]
-
-    if request.method == "POST":
-        user_answer = request.POST.get("answer")
-        if user_answer:
-            answers = request.session.get("answers", [])
-            answers.append({"question": current_question, "user_answer": user_answer})
-            request.session["answers"] = answers
-
-            current_question_index += 1
-            request.session["current_question_index"] = current_question_index
-
-            # ✅  send HX-Redirect header for HTMX
-            if current_question_index >= len(questions):
-                if request.headers.get("HX-Request"):
-                    response = JsonResponse({})
-                    response["HX-Redirect"] = "/apti/quiz-result/"
-                    return response
-                return redirect("quiz_result")
-
-            next_question = questions[current_question_index]
-
-            if request.headers.get("HX-Request"):
-                return render(request, "partials/question_snippet.html", {
-                    "question": next_question,
-                    "question_counter": current_question_index + 1
+            for i in range(len(user_answers)):
+                combined.append({
+                    "question": session_questions[i],     # ✅ use server-stored question with answer
+                    "user_answer": user_answers[i]
                 })
 
-            return redirect("quiz_questions")
+            request.session["answers"] = combined
 
-    return render(request, "quiz_questions.html", {
-        "question": current_question,
-        "question_counter": current_question_index + 1,
-        "proctored": True
-    })
+            return JsonResponse({"redirect_url": "/apti/quiz-result/"})
+        except Exception as e:
+            return JsonResponse({"error": str(e)}, status=400)
 
-# View to show quiz result
+    return JsonResponse({"error": "Invalid method"}, status=405)
+
+# Results page
 def quiz_result(request):
     answers = request.session.get("answers", [])
-    total_questions = len(answers)
     score = 0
+    total = len(answers)
 
-    for answer in answers:
-        # Compare the selected answer with the correct answer 
-        if answer["user_answer"] == answer["question"]["answer"]:
+    for entry in answers:
+        correct_answer = entry["question"].get("answer")
+        if entry["user_answer"] == correct_answer:
             score += 1
-    percentage = (score / total_questions) * 100 if total_questions else 0
 
-    # Clear session data after showing results (optional)
+    percentage = (score / total) * 100 if total else 0
+
+    # Optionally clear
     request.session["answers"] = []
-    request.session["current_question_index"] = 0
+    request.session["questions"] = []
 
     return render(request, "result.html", {
         "score": score,
-        "total": total_questions,
+        "total": total,
         "percentage": percentage
     })
-

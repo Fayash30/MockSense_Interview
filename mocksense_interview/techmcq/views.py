@@ -15,6 +15,10 @@ def quiz_view(request):
     return render(request, 'techmcq/index.html', { "proctored": True })
 
 @require_GET
+def quiz_home(request):
+    return render(request, 'techmcq/instructions.html')
+
+@require_GET
 def get_questions(request):
     selected_questions = random.sample(all_questions, 10)
     # Return copies of each question without the answer

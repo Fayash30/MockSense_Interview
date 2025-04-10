@@ -1,127 +1,180 @@
+{% load static %}
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Aptitude Quiz | Question</title>
-    <script src="https://unpkg.com/htmx.org@1.9.2"></script>
-    <style>
-        body {
-            font-family: 'Arial', sans-serif;
-            background-color: #f4f4f4;
-            text-align: center;
-            margin: 0;
-            padding: 0;
-        }
+  <meta charset="UTF-8">
+  <title>Aptitude Quiz</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      margin: 0;
+      background: #f7f9fc;
+    }
 
-        .container {
-            width: 50%;
-            margin: 50px auto;
-            background: white;
-            padding: 20px;
-            border-radius: 10px;
-            box-shadow: 0px 0px 15px rgba(0, 0, 0, 0.2);
-        }
+    .container {
+      display: flex;
+      max-width: 1200px;
+      margin: 2rem auto;
+      gap: 1.5rem;
+    }
 
-        h1 {
-            color: #4CAF50;
-            margin-bottom: 20px;
-        }
+    .sidebar {
+      width: 120px;
+      background: #ffffff;
+      padding: 1rem;
+      border-radius: 12px;
+      box-shadow: 0 0 8px rgba(0, 0, 0, 0.1);
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 0.5rem;
+      justify-items: center;
+    }
 
-        .question-box {
-            font-size: 18px;
-            font-weight: bold;
-            margin-bottom: 20px;
-        }
+    .sidebar button {
+      width: 40px;
+      height: 40px;
+      border: none;
+      border-radius: 50%;
+      color: white;
+      font-weight: bold;
+      cursor: pointer;
+    }
 
-        .options label {
-            display: block;
-            background: white;
-            border: 2px solid #4CAF50;
-            padding: 10px;
-            border-radius: 5px;
-            margin: 10px auto;
-            width: 100%;
-            max-width: 400px;
-            cursor: pointer;
-            transition: all 0.3s ease;
-        }
+    .quiz-box {
+      flex: 1;
+      background: #ffffff;
+      padding: 2rem;
+      border-radius: 12px;
+      box-shadow: 0 0 8px rgba(0, 0, 0, 0.1);
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      min-height: 500px;
+    }
 
-        .options input {
-            display: none;
-        }
+    .question-number {
+      font-size: 1.2rem;
+      margin-bottom: 1rem;
+      color: #333;
+    }
 
-        /* Highlight selected option */
-        .options label.selected {
-            background: #4CAF50;
-            color: white;
-            font-weight: bold;
-            transform: scale(1.05);
-            transition: all 0.3s ease;
-        }
+    #question-text {
+      font-size: 1.1rem;
+      margin-bottom: 1rem;
+    }
 
-        button {
-            background: #4CAF50;
-            color: white;
-            padding: 12px 20px;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-            font-size: 18px;
-            margin-top: 15px;
-            transition: background 0.3s ease;
-        }
+    .options label {
+      display: block;
+      margin-bottom: 0.8rem;
+      font-size: 1rem;
+      border: 2px solid #007bff;
+      padding: 10px;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: background-color 0.2s ease;
+    }
 
-        button:hover {
-            background: #45a049;
-        }
+    input[type="radio"] {
+      display: none;
+    }
 
-        @media (max-width: 768px) {
-            .container {
-                width: 80%;
-            }
-        }
-    </style>
+    .options label.selected {
+      background-color: #007bff;
+      color: white;
+    }
+
+    .nav-buttons {
+      margin-top: auto;
+      display: flex;
+      justify-content: space-around;
+      gap: 2rem;
+      padding-top: 2rem;
+    }
+
+    button.nav {
+      padding: 0.8rem 1.6rem;
+      border: none;
+      background-color: #007bff;
+      color: white;
+      border-radius: 8px;
+      font-weight: bold;
+      cursor: pointer;
+    }
+
+    button.nav:hover {
+      background-color: #0056b3;
+    }
+
+    .legend {
+      display: flex;
+      justify-content: center;
+      gap: 2rem;
+      margin-top: 2rem;
+      font-size: 1rem;
+      background: #ffffff;
+      padding: 1rem;
+      border-radius: 12px;
+      box-shadow: 0 0 8px rgba(0, 0, 0, 0.1);
+      max-width: 600px;
+      margin-left: auto;
+      margin-right: auto;
+    }
+
+    .legend-item {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .color-box {
+      width: 18px;
+      height: 18px;
+      border-radius: 4px;
+      display: inline-block;
+      border: 1px solid #ccc;
+    }
+
+    .answered { background-color: #007bff; }
+    .skipped { background-color: #ff9800; }
+    .unattempted { background-color: #ccc; }
+  </style>
 </head>
 <body>
-    {% include 'includes/navbar.html' %}
-    <div  id="quiz-container" class="container">
-        <h1>📝 Aptitude Quiz</h1>
-        <form method="POST"
-            hx-post="{% url 'quiz_questions' %}"
-            hx-target="#quiz-container"
-            hx-swap="outerHTML">
-        {% csrf_token %}
-        <div class="question-box">
-            <p><strong>Q{{ question_counter }}: {{ question.question }}</strong></p>
-        </div>
+  {% include 'includes/navbar.html' %}
 
-        <div class="options">
-            {% for option in question.options %}
-                <label>
-                    <input type="radio" name="answer" value="{{ option }}" required onclick="selectOption(this)">
-                    {{ option }}
-                </label>
-            {% endfor %}
-        </div>
+  <script>
+    const questions = {{ questions_json|safe }};
+  </script>
 
-        <button type="submit" name="action" value="next">Next ➡️</button>
-        </form>
-
+  <div class="legend">
+    <div class="legend-item">
+      <span class="color-box answered"></span> Answered
     </div>
+    <div class="legend-item">
+      <span class="color-box skipped"></span> Skipped
+    </div>
+    <div class="legend-item">
+      <span class="color-box unattempted"></span> Unattempted
+    </div>
+  </div>
 
-    <script>
-        function selectOption(input) {
-            // Remove 'selected' class from all labels
-            document.querySelectorAll('.options label').forEach(label => {
-                label.classList.remove('selected');
-            });
+  <div class="container">
+    <div class="sidebar" id="sidebar"></div>
 
-            // Add 'selected' class to the clicked option
-            if (input.checked) {
-                input.parentElement.classList.add('selected');
-            }
-        }
-    </script>
+    <div class="quiz-box" id="quiz-box">
+      <div>
+        <div class="question-number" id="question-number"></div>
+        <div id="question-text"></div>
+        <div class="options" id="options"></div>
+      </div>
+      <div class="nav-buttons">
+        <button class="nav" onclick="prevQuestion()">⬅️ Previous</button>
+        <button class="nav" onclick="skipQuestion()">Skip ⏭️</button>
+        <button class="nav" id="next-btn" onclick="nextQuestion()">Next ➡️</button>
+
+      </div>
+    </div>
+  </div>
+  <script src="{% static 'aptitude/script.js' %}"></script>
 </body>
 </html>

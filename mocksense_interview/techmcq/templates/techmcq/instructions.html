@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Aptitude Quiz | Instructions</title>
+    <title>Technical MCQ | Instructions</title>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -58,15 +58,15 @@
 <body>
     {% include 'includes/navbar.html' %}
     <div class="container">
-        <h1>🧠 Aptitude Test Instructions</h1>
+        <h1>🧠 Technical MCQ Test Instructions</h1>
         <ul>
-            <li>✅ 20 questions total (5 each from Logical, Quantitative, Verbal, Reasoning).</li>
+            <li>✅ 10 questions total. Answer all the questions before submitting</li>
             <li>🚫 No face detected = violation.</li>
             <li>🚫 Multiple faces detected = violation.</li>
             <li>🚫 Switching tabs = violation.</li>
-            <li>🚫 Copy/Paste or content stealing = violation.</li>
+            <li>🚫 Copy/Paste = violation.</li>
         </ul>
-        <form method="POST">
+        <form method="GET" action="{% url 'take-mcq' %}">
             {% csrf_token %}
             <button type="submit">Start Test 🚀</button>
         </form>
