@@ -53,6 +53,21 @@
       }
     }
 
+    a {
+      text-decoration: none;
+      font-weight: bold;
+      color: #b30000;
+      display: inline-block;
+      margin-top: 30px;
+      transition: color 0.3s ease;
+      animation: fadeInLink 2s ease;
+    }
+
+    a:hover {
+      color: #ff0000;
+      text-decoration: underline;
+    }
+
     .chart-container {
       width: 90%;
       max-width: 450px;
@@ -117,6 +132,7 @@
     </div>
   </div>
 
+  <a href="{% url 'home' %}">← Back to Home</a>
   <script>
     // Animate overall score (counter style)
     const scoreElement = document.getElementById("score");

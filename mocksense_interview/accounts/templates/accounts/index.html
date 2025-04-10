@@ -211,6 +211,20 @@
       transition: 0.3s;
     }
 
+    .user-info {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-weight: 500;
+}
+
+.user-icon {
+  width: 35px;
+  height: 35px;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
     .section-button {
       margin-top: 20px;
       padding: 12px 24px;
@@ -295,14 +309,27 @@
       <button class="theme-toggle" id="themeToggle" title="Toggle theme">
         <i class="fas fa-moon"></i>
       </button>
-        <form action="{% url 'login' %}">
-          <button class="sign-in-btn" type="submit">Start In</button>
-      </form>
-      <form action="{% url 'register' %}">
-        <button class="start-btn" type="submit">Start Free</button>
+    
+      {% if user.is_authenticated %}
+        <div class="user-info">
+          <img src="{% static 'assets/User.png' %}" alt="user" class="user-icon" />
+          <span>Welcome, {{ user.username }}</span>
+        </div>
+        <form action="{% url 'logout' %}" method="post">
+          {% csrf_token %}
+          <button class="sign-in-btn" type="submit">Logout</button>
+        </form>
+      {% else %}
+      <form action="{% url 'login' %}">
+        <button class="sign-in-btn" type="submit">Login</button>
     </form>
-  
+    <form action="{% url 'register' %}">
+      <button class="start-btn" type="submit">Sign Up</button>
+  </form>
+      {% endif %}
     </div>
+    
+    
   </header>
 
   <section class="hero">
@@ -338,7 +365,7 @@
   <section id="technical">
     <h2>Technical Interview</h2>
     <p>Simulated technical interview questions tailored to your domain with expert feedback.</p>
-    <a href=" {% url 'resume_uploading' %}" class="section-button">Start Test</a>
+    <a href="{% url 'mock_interview_index' %}" class="section-button">Start Test</a>
   </section>
 
   <!-- <section id="results" class="disabled-section">

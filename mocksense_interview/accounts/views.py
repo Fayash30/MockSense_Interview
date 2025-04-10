@@ -8,7 +8,7 @@ from django.views.decorators.csrf import csrf_exempt
 
 def user_login(request):
     if request.user.is_authenticated:
-        return redirect('quiz_view')
+        return redirect('home')
 
     if request.method == 'POST':
         username = request.POST['username']
@@ -23,7 +23,7 @@ def user_login(request):
         user = authenticate(request, username=username, password=password)
         if user:
             login(request, user)
-            return redirect('quiz_view')
+            return redirect('home')
         else:
             messages.error(request, 'Incorrect password.')
             
@@ -31,7 +31,7 @@ def user_login(request):
 
 def register(request):
     if request.user.is_authenticated:
-        return redirect('quiz_view')
+        return redirect('home')
     if request.method == 'POST':
         form = RegisterForm(request.POST)
         if form.is_valid():

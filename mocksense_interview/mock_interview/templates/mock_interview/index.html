@@ -1,157 +1,153 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Mock Interview</title>
-    <style>
-        body {
-            font-family: 'Arial', sans-serif;
-            background-color: #f0f0f0;
-            margin: 0;
-            padding: 0;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            height: 100vh;
-            text-align: center;
-        }
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Group Discussion</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
 
-        h1 {
-            color: #4CAF50;
-            font-size: 36px;
-            margin-bottom: 10px;
-        }
+    body {
+      font-family: 'Poppins', sans-serif;
+      background-color: #ffffff;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      min-height: 100vh;
+      text-align: center;
+      padding: 20px;
+      animation: fadeIn 1s ease-in-out;
+    }
 
-        p {
-            font-size: 18px;
-            margin-bottom: 20px;
-        }
+    h1 {
+      color:black;
+      font-size: 42px;
+      margin-bottom: 20px;
+      font-weight: 600;
+      padding: 15px 30px;
+    }
 
-        .start-btn-container {
-            margin-bottom: 20px;
-        }
+    p {
+      font-size: 18px;
+      margin-bottom: 25px;
+      color: #333;
+    }
 
-        button {
-            background-color: #4CAF50;
-            color: white;
-            padding: 15px 32px;
-            font-size: 18px;
-            border: none;
-            border-radius: 8px;
-            cursor: pointer;
-            transition: background-color 0.3s ease;
-        }
+    .start-btn-container {
+      margin-bottom: 30px;
+    }
 
-        button:hover {
-            background-color: #45a049;
-        }
+    button {
+      background: rgba(122, 0, 0, 0.778);
+      color: rgb(255, 255, 255);
+      padding: 15px 40px;
+      font-size: 18px;
+      border: 1px solid rgba(255, 255, 255, 0.3);
+      border-radius: 12px;
+      cursor: pointer;
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+      box-shadow: 0 8px 32px rgba(31, 38, 135, 0.2);
+      transition: all 0.3s ease;
+    }
 
-        .video-container {
-            margin-top: 20px;
-        }
+    button:hover {
+      background: rgba(69, 5, 5, 0.515);
+      transform: scale(1.05);
+    }
 
-        #webcam {
-            border-radius: 8px;
-            border: 3px solid #4CAF50;
-            box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
-        }
+    .notes-box {
+      margin-top: 35px;
+      padding: 25px;
+      background: linear-gradient(to bottom right, #ffffff, #d2042d);
+      color: #000;
+      width: 65%;
+      animation: popIn 0.8s ease forwards;
+    }
 
-        /* Notes Section Styling */
-        .notes-box {
-            margin-top: 30px;
-            padding: 15px;
-            background: linear-gradient(135deg, rgba(75, 192, 192, 0.6), rgba(153, 102, 255, 0.6));
-            border-radius: 10px;
-            font-size: 18px;
-            box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.3);
-            width: 60%;
-            text-align: left;
-        }
+    .notes-box h2 {
+      font-size: 24px;
+      margin-bottom: 15px;
+      color: #000;
+    }
 
-        .notes-box h2 {
-            color: #000;
-            font-size: 22px;
-            margin-bottom: 10px;
-            text-align: center;
-        }
+    .notes-box p {
+      font-size: 16px;
+      margin: 10px 0;
+      text-align: left;
+      display: flex;
+      align-items: flex-start;
+      color: #000;
+    }
 
-        .notes-box p {
-            font-size: 16px;
-            color: #000;
-            margin: 5px 0;
-            display: flex;
-            align-items: center;
-        }
+    .notes-box h4 {
+      margin: 0;
+      font-weight: 600;
+      margin-right: 8px;
+      color: #8b0000;
+    }
 
-        .notes-box h4 {
-            margin: 0;
-            color: #222;
-            font-weight: bold;
-        }
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
 
-        @media (max-width: 768px) {
-            h1 {
-                font-size: 28px;
-            }
+    @keyframes popIn {
+      from { opacity: 0; transform: scale(0.95); }
+      to { opacity: 1; transform: scale(1); }
+    }
 
-            p {
-                font-size: 16px;
-            }
+    @media (max-width: 768px) {
+      h1 {
+        font-size: 30px;
+        padding: 12px 20px;
+      }
 
-            button {
-                font-size: 16px;
-            }
+      p {
+        font-size: 16px;
+      }
 
-            .notes-box {
-                width: 90%;
-                font-size: 16px;
-            }
-        }
-    </style>
+      button {
+        font-size: 16px;
+        padding: 12px 30px;
+      }
+
+      .notes-box {
+        width: 90%;
+        font-size: 15px;
+        padding: 20px;
+      }
+
+      .notes-box h2 {
+        font-size: 20px;
+      }
+    }
+  </style>
 </head>
 <body>
-    {% include 'includes/navbar.html' %}
-    <h1>Welcome to the Mock Interview</h1>
-    <p>Click below to start your interview.</p>
+  {% include 'includes/navbar.html' %}
 
-    <div class="start-btn-container">
-        <a href="{% url 'mock_interview_quiz' %}">
-            <button onclick="startInterview()">Start Interview</button>
-        </a>
-    </div>
+  <h1>Welcome to Mock Interview</h1>
+  <p>Click below to start your Interview.</p>
 
-    {% comment %} <div class="video-container">
-        <video id="webcam" width="640" height="480" autoplay></video>
-    </div> {% endcomment %}
+  <div class="start-btn-container">
+    <a href="{% url 'resume_uploading' %}">
+      <button>Start Interview</button>
+    </a>
+  </div>
 
-    <!-- Notes Section -->
-    <div class="notes-box">
-        <h2>📝 Important Notes:</h2>
-        <p><h4>1) Wear a Headset: </h4>&nbsp; Ensure you are wearing a headset for better sound quality.</p>
-        <p><h4>2) Speak Louder: </h4>&nbsp; Increase your volume to ensure your voice is clear and audible.</p>
-        <p><h4>3) Speak Clearly: </h4>&nbsp; Articulate your words clearly for better understanding.</p>
-    </div>
-
-    <script>
-        function startInterview() {
-            startCamera();
-        }
-
-        function startCamera() {
-            const video = document.getElementById('webcam');
-            const constraints = { video: true };
-
-            navigator.mediaDevices.getUserMedia(constraints)
-                .then(function(stream) {
-                    video.srcObject = stream;
-                })
-                .catch(function(error) {
-                    console.error("Error accessing webcam:", error);
-                });
-        }
-    </script>
-
+  <div class="notes-box">
+    <h2>📝 Important Notes:</h2>
+    <p><h4>1) Stay Focused:</h4> Keep your camera on and speak clearly during the discussion.</p>
+    <p><h4>2) Speak Louder: </h4> Increase your volume to ensure your voice is clear and audible.</p>
+    <p><h4>3) Use Headphones:</h4> To avoid echo and background noise.</p>
+    <p><h4>4) Be Respectful:</h4> Listen actively and do not interrupt others while speaking.</p>
+  </div>
 </body>
 </html>

@@ -4,6 +4,9 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Group Discussion</title>
+
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
     <script>
         let videoStream;
     
@@ -71,9 +74,36 @@
         window.onload = startCamera;
         window.onbeforeunload = stopCamera;
     </script>
-    
     <style>
-        body { font-family: Arial, sans-serif; text-align: center; margin: 20px; }
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: #ffffff;
+            margin: 0;
+            padding: 20px;
+            color: #990000; /* Cherry red font */
+        }
+
+        h2, h3 {
+            text-align: center;
+            color: #990000;
+            animation: fadeIn 1s ease-in-out;
+        }
+
+        .container {
+            margin-top: 40px;
+            max-width: 800px;
+            margin-left: auto;
+            margin-right: auto;
+            padding: 20px;
+            background: #fff;
+            border-radius: 16px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+        }
+
         .right-container {
             position: fixed;
             top: 10px;
@@ -83,50 +113,85 @@
             align-items: center;
             gap: 10px;
         }
-        video {
-            width: 180px;
-            height: auto;
-            border: 2px solid black;
-            border-radius: 10px;
-        }
+
         .emotion-container {
-            background: rgba(0, 0, 0, 0.7);
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background: rgba(153, 0, 0, 0.9);
             color: white;
-            padding: 10px;
-            border-radius: 10px;
-            font-size: 18px;
+            padding: 15px;
+            border-radius: 12px;
             text-align: center;
-            width: 220px;
+            width: 260px;
+            box-shadow: 0 4px 10px rgba(68, 14, 14, 0.3);
+            animation: fadeIn 1.2s ease-in-out;
+            font-size: 18px;
+            font-weight: bold;
         }
+
         .quote {
             font-style: italic;
             font-size: 16px;
-            margin-top: 5px;
-            color: yellow;
+            margin-top: 8px;
+            color: #ffcccc;
+            animation: fadeInUp 0.5s ease-in-out;
         }
-        .container {
-            margin-top: 30px;
+
+        .messages {
+            padding: 10px;
         }
+
         .message {
             margin: 10px 0;
+            line-height: 1.6;
+            animation: fadeInUp 0.5s ease-in-out;
         }
-        .message.user { color: green; }
-        .message.ai { color: blue; }
+
+        .message.user {
+            color: #d35400; /* Distinct color for user */
+        }
+
+        .message.ai {
+            color: #2980b9; /* AI voice color */
+        }
+
+        #recording-status {
+            margin-top: 10px;
+            font-weight: 600;
+            color: #990000;
+            animation: pulse 1.5s infinite;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(-10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes pulse {
+            0% { opacity: 1; }
+            50% { opacity: 0.6; }
+            100% { opacity: 1; }
+        }
     </style>
 </head>
 <body>
     {% include 'includes/navbar.html' %}
-    <h2>Group Discussion</h2>
 
+    <h2>Group Discussion</h2>
+    <h3>🧠 Topic: {{ topic }}</h3>
 
     <div class="right-container">
-        <div class="emotion-container" style="position: fixed; bottom: 20px; right: 20px; background: rgba(0,0,0,0.75); color: white; padding: 12px; border-radius: 10px; width: 240px;">
+        <div class="emotion-container">
             <p id="emotionText">Emotion: Detecting...</p>
-            <p class="quote" id="quoteBox" style="display:none; color: yellow; font-style: italic;"></p>
-        </div>        
+            <p class="quote" id="quoteBox" style="display:none;"></p>
+        </div>
     </div>
-
-    <h3>🧠 Topic: {{ topic }}</h3>
 
     <div class="container">
         <div class="messages" id="messages"></div>
@@ -260,8 +325,6 @@
             };
         }
 
-
-    
         async function sendAllResponsesToServer() {
             try {
                 const response = await fetch("/group_discussion/save_response/", {
@@ -290,6 +353,5 @@
             });
         });
     </script>
-    
 </body>
 </html>

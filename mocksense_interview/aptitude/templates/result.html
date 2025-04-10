@@ -1,120 +1,164 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Quiz Results</title>
-    <script>
-        sessionStorage.removeItem("face_violations");
-        sessionStorage.removeItem("noface_violations");
-        sessionStorage.removeItem("camera_initialized");
-        sessionStorage.removeItem("camera_alerted");
-        sessionStorage.removeItem("cameraGranted");
-      </script>
-    <style>
-        body {
-            font-family: 'Arial', sans-serif;
-            background-color: #f4f4f4;
-            text-align: center;
-            padding: 50px 0;
-        }
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Quiz Results</title>
+  <script>
+    sessionStorage.removeItem("face_violations");
+    sessionStorage.removeItem("noface_violations");
+    sessionStorage.removeItem("camera_initialized");
+    sessionStorage.removeItem("camera_alerted");
+    sessionStorage.removeItem("cameraGranted");
+  </script>
+  <style>
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      background-color: #ffffff;
+      margin: 0;
+      padding: 40px 0;
+      text-align: center;
+      animation: fadeIn 1s ease;
+    }
 
-        h1 {
-            color: #4CAF50;
-            font-size: 36px;
-            margin-bottom: 20px;
-        }
+    .result-container {
+      background-color: #fff5f5;
+      border-radius: 15px;
+      padding: 40px;
+      box-shadow: 0 0 25px rgba(255, 0, 0, 0.15);
+      width: 60%;
+      margin: 0 auto;
+      animation: slideIn 0.8s ease;
+    }
 
-        p {
-            font-size: 18px;
-            margin: 15px 0;
-        }
+    h1 {
+      color: #cc0000;
+      font-size: 36px;
+      margin-bottom: 20px;
+    }
 
-        .result-container {
-            background-color: white;
-            border-radius: 10px;
-            padding: 30px;
-            box-shadow: 0px 0px 20px rgba(0, 0, 0, 0.1);
-            width: 60%;
-            margin: 0 auto;
-        }
+    .score {
+      font-size: 26px;
+      font-weight: bold;
+      color: #a30000;
+      margin: 20px 0 10px;
+    }
 
-        .thumbs-up {
-            font-size: 50px;
-            color: #4CAF50;
-            margin-top: 20px;
-        }
+    p {
+      font-size: 18px;
+      margin: 12px 0;
+      color: #333;
+    }
 
-        .message {
-            font-size: 20px;
-            color: #333;
-            margin: 10px 0;
-        }
+    .message {
+      font-size: 22px;
+      font-weight: 500;
+      margin: 15px 0;
+      color: #b30000;
+      animation: pulse 1.5s infinite;
+    }
 
-        .score {
-            font-size: 24px;
-            font-weight: bold;
-            color: #333;
-        }
+    .emoji {
+      font-size: 70px;
+      margin: 20px 0;
+      animation: bounce 1.5s infinite;
+    }
 
-        .btn {
-            display: inline-block;
-            padding: 15px 32px;
-            text-decoration: none;
-            font-size: 16px;
-            border-radius: 8px;
-            cursor: pointer;
-            margin: 10px;
-            transition: all 0.3s ease;
-        }
+    .btn {
+      display: inline-block;
+      padding: 15px 30px;
+      text-decoration: none;
+      font-size: 16px;
+      border-radius: 10px;
+      margin: 12px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
 
-        .next-btn {
-            background-color: #007bff;
-            color: white;
-            border: none;
-        }
+    .next-btn {
+      background-color: #cc0000;
+      color: white;
+      border: none;
+    }
 
-        .next-btn:hover {
-            background-color: #0056b3;
-        }
+    .next-btn:hover {
+      background-color: #e60000;
+      transform: scale(1.05);
+    }
 
-        .try-again-btn {
-            background-color: #4CAF50;
-            color: white;
-            border: none;
-        }
+    .try-again-btn {
+      background-color: #b30000;
+      color: white;
+      border: none;
+    }
 
-        .try-again-btn:hover {
-            background-color: #45a049;
-        }
+    .try-again-btn:hover {
+      background-color: #990000;
+      transform: scale(1.05);
+    }
 
-        @media (max-width: 768px) {
-            .result-container {
-                width: 80%;
-            }
-        }
-    </style>
+    @media (max-width: 768px) {
+      .result-container {
+        width: 90%;
+        padding: 25px;
+      }
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; }
+      to { opacity: 1; }
+    }
+
+    @keyframes slideIn {
+      from { transform: translateY(30px); opacity: 0; }
+      to { transform: translateY(0); opacity: 1; }
+    }
+
+    @keyframes pulse {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.6; }
+    }
+
+    @keyframes bounce {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-10px); }
+    }
+  </style>
 </head>
 <body>
-    {% include 'includes/navbar.html' %}
-    <div class="result-container">
-        <h1>Quiz Results</h1>
-        <p class="score">You scored <strong>{{ score }}</strong> out of <strong>{{ total }}</strong>.</p>
-        <p>Percentage: <strong>{{ percentage|floatformat:2 }}%</strong></p>
+  {% include 'includes/navbar.html' %}
+  <div class="result-container">
+    <h1>🎯 Quiz Results</h1>
 
-        <div class="thumbs-up">
-            👍
-        </div>
+    <p class="score">You scored <strong>{{ score }}</strong> out of <strong>{{ total }}</strong>.</p>
+    <p>Percentage: <strong>{{ percentage|floatformat:2 }}%</strong></p>
 
-        <p class="message"><strong>Improve Yourself!!</strong></p>
-
-        <!-- Next button to move to the mock interview stage -->
-        <a href="{% url 'resume_uploading' %}" class="btn next-btn">Next</a>
-
-        <!-- Optional: You can keep the Try Again button as well -->
-        <form action="{% url 'quiz_view' %}" method="get">
-            <button type="submit" class="btn try-again-btn">Try Again</button>
-        </form>
+    <!-- Dynamic emoji based on score -->
+    <div class="emoji">
+      {% if percentage >= 80 %}
+        😄
+      {% elif percentage >= 50 %}
+        😐
+      {% else %}
+        😢
+      {% endif %}
     </div>
+
+    <p class="message">
+      {% if percentage >= 80 %}
+        Awesome! You're a pro! 🎉
+      {% elif percentage >= 50 %}
+        Good effort! Keep practicing. 💪
+      {% else %}
+        Don't give up! Practice makes perfect. 🔁
+      {% endif %}
+    </p>
+
+    <a href="{% url 'discussion' %}" class="btn next-btn">Next</a>
+
+    <form action="{% url 'quiz_view' %}" method="get" style="display:inline;">
+      <button type="submit" class="btn try-again-btn">Try Again</button>
+    </form>
+  </div>
 </body>
 </html>

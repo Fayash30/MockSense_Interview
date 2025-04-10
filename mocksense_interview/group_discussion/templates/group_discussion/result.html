@@ -1,33 +1,131 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-    <title>Improved Responses</title>
-    <style>
-        body { font-family: Arial; padding: 20px; }
-        .section { margin-bottom: 30px; }
-        pre { background: #f4f4f4; padding: 15px; border-radius: 5px; }
-    </style>
-    <script>
-        sessionStorage.removeItem("face_violations");
-        sessionStorage.removeItem("noface_violations");
-        sessionStorage.removeItem("camera_initialized");
-        sessionStorage.removeItem("camera_alerted");
-        sessionStorage.removeItem("cameraGranted");
-      </script>
+  <meta charset="UTF-8" />
+  <title>Improved Responses</title>
+  <style>
+    /* General Body Styling */
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      padding: 40px;
+      background: #ffffff;
+      color: #b30000;
+      text-align: center;
+      animation: fadeInBody 1s ease-in-out;
+    }
+
+    h2 {
+      font-size: 2em;
+      margin-bottom: 30px;
+      animation: slideDown 1s ease;
+    }
+
+    h3 {
+      color: #990000;
+      margin-bottom: 10px;
+      animation: fadeInUp 1s ease-in-out;
+    }
+
+    /* Section Container */
+    .section {
+      margin: 40px auto;
+      max-width: 900px;
+      background: #fff0f0;
+      border: 2px solid #ffcccc;
+      border-radius: 15px;
+      box-shadow: 0 4px 12px rgba(255, 0, 0, 0.1);
+      padding: 25px;
+      animation: fadeInBox 1.2s ease-in-out;
+      transition: transform 0.3s ease;
+    }
+
+    .section:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 8px 18px rgba(255, 0, 0, 0.2);
+    }
+
+    pre {
+      background: #fff5f5;
+      padding: 20px;
+      border-radius: 10px;
+      white-space: pre-wrap;
+      text-align: left;
+      font-family: Verdana, Geneva, Tahoma, sans-serif;
+      color: #660000;
+      box-shadow: inset 0 0 10px rgba(255, 204, 204, 0.5);
+      animation: fadeInText 1.2s ease;
+    }
+
+    a {
+      text-decoration: none;
+      font-weight: bold;
+      color: #b30000;
+      display: inline-block;
+      margin-top: 30px;
+      transition: color 0.3s ease;
+      animation: fadeInLink 2s ease;
+    }
+
+    a:hover {
+      color: #ff0000;
+      text-decoration: underline;
+    }
+
+    /* Animations */
+    @keyframes fadeInBody {
+      from { opacity: 0; }
+      to { opacity: 1; }
+    }
+
+    @keyframes slideDown {
+      from { transform: translateY(-20px); opacity: 0; }
+      to { transform: translateY(0); opacity: 1; }
+    }
+
+    @keyframes fadeInUp {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    @keyframes fadeInBox {
+      from { opacity: 0; transform: scale(0.95); }
+      to { opacity: 1; transform: scale(1); }
+    }
+
+    @keyframes fadeInText {
+      from { opacity: 0; }
+      to { opacity: 1; }
+    }
+
+    @keyframes fadeInLink {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+  </style>
+
+  <script>
+    // Clear sessionStorage from any camera flags or violations
+    sessionStorage.removeItem("face_violations");
+    sessionStorage.removeItem("noface_violations");
+    sessionStorage.removeItem("camera_initialized");
+    sessionStorage.removeItem("camera_alerted");
+    sessionStorage.removeItem("cameraGranted");
+  </script>
 </head>
+
 <body>
-    <h2>📊 Group Discussion Result</h2>
+  <h2>📊 Group Discussion Result</h2>
 
-    <div class="section">
-        <h3>📝 Original Responses</h3>
-        <pre>{{ original }}</pre>
-    </div>
+  <div class="section">
+    <h3>📝 Original Responses</h3>
+    <pre>{{ original }}</pre>
+  </div>
 
-    <div class="section">
-        <h3>✅ Improved Sentences</h3>
-        <pre>{{ improved }}</pre>
-    </div>
+  <div class="section">
+    <h3>✅ Improved Sentences</h3>
+    <pre>{{ improved }}</pre>
+  </div>
 
-    <a href="{% url 'discussion' %}">← Back to Home</a>
+  <a href="{% url 'home' %}">← Back to Home</a>
 </body>
 </html>

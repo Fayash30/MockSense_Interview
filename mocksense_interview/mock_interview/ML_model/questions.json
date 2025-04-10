@@ -1,9 +1,9 @@
 {
     "questions": [
-        "Explain the concept of program debugging and testing.",
-        "What is virtual reality?",
-        "Explain serialization in Java.",
-        "Explain the 'with' statement in Python.",
-        "Explain searching algorithms for arrays in computer programming."
+        "Explain microservices in DevOps.",
+        "What are lambda functions in Python?",
+        "What are stacks?",
+        "What is JavaScript?",
+        "Explain the concept of a full-stack developer."
     ]
 }

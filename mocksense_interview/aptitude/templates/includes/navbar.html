@@ -245,7 +245,7 @@ window.addEventListener('beforeunload', () => {
 <script>
   function closeToast() {
     document.getElementById("logoutToastContainer").style.display = "none";
-    window.location.href = "{% url 'login' %}";
+    window.location.href = "{% url 'home' %}";
   }
 
   document.addEventListener("DOMContentLoaded", function () {

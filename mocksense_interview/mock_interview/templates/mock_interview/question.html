@@ -2,102 +2,146 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Mock Interview</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet" />
   <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
   <style>
-    body {
-      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-      background-color: #ffffff;
+    * {
+      box-sizing: border-box;
       margin: 0;
       padding: 0;
-      color: black;
+    }
+
+    body {
+      font-family: 'Poppins', sans-serif;
+      background: white;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 40px 20px;
+      animation: fadeIn 1s ease-in-out;
     }
 
     h1 {
-      text-align: center;
-      margin-top: 30px;
-      color: black;
-      animation: fadeIn 1.5s ease-in-out;
+      font-size: 42px;
+      margin-bottom: 30px;
+      color: #b71c1c;
+      animation: slideDown 0.8s ease-in-out;
     }
 
     #question-container {
-      text-align: center;
-      margin: 40px auto 20px auto;
-      max-width: 800px;
-      padding: 20px;
-      background-color: #fff;
-      border: 2px solid black;
-      box-shadow: 0 2px 10px rgba(255, 0, 0, 0.2);
-      border-radius: 10px;
-      animation: fadeSlide 1s ease forwards;
+      background: #ffffff;
+      padding: 25px 30px;
+      border-radius: 16px;
+      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.08);
+      margin-bottom: 25px;
+      width: 100%;
+      max-width: 700px;
+      animation: zoomIn 0.6s ease;
     }
 
     #current-question {
-      font-size: 1.4rem;
-      color: black;
+      font-size: 22px;
+      color: #c62828;
     }
 
     #answer-container {
-      max-width: 800px;
-      margin: 0 auto;
-      padding: 20px;
-      text-align: center;
+      width: 100%;
+      max-width: 700px;
+      display: flex;
+      flex-direction: column;
+      gap: 15px;
+      animation: fadeInUp 0.9s ease;
     }
 
     #user-answer {
       width: 100%;
-      height: 120px;
-      padding: 12px;
-      font-size: 1rem;
-      border: 2px solid black;
-      border-radius: 8px;
+      height: 140px;
+      padding: 15px;
+      font-size: 16px;
+      border: 2px solid #ef9a9a;
+      border-radius: 12px;
       resize: none;
-      color: black;
-      background-color: #fff9f9;
+      outline: none;
+      transition: 0.3s ease;
+    }
+
+    #user-answer:focus {
+      border-color: #e53935;
+      box-shadow: 0 0 8px #e53935aa;
     }
 
     button {
-      margin-top: 15px;
-      padding: 10px 25px;
-      font-size: 1rem;
-      border: 2px solid black;
-      background-color: black;
-      color: white;
-      border-radius: 6px;
+      align-self: flex-end;
+      background: linear-gradient(135deg, #e53935, #ef5350);
+      color: #fff;
+      padding: 12px 30px;
+      font-size: 16px;
+      border: none;
+      border-radius: 8px;
       cursor: pointer;
       transition: all 0.3s ease;
-      font-weight: bold;
     }
 
     button:hover {
-      background-color: black;
-      color: red;
-      border-color: black;
+      background: #c62828;
       transform: scale(1.05);
+      box-shadow: 0 6px 15px rgba(198, 40, 40, 0.3);
     }
 
     /* Animations */
     @keyframes fadeIn {
-      from { opacity: 0; transform: scale(0.95); }
-      to { opacity: 1; transform: scale(1); }
-    }
-
-    @keyframes fadeSlide {
       from { opacity: 0; transform: translateY(20px); }
       to { opacity: 1; transform: translateY(0); }
+    }
+
+    @keyframes slideDown {
+      from { transform: translateY(-30px); opacity: 0; }
+      to { transform: translateY(0); opacity: 1; }
+    }
+
+    @keyframes zoomIn {
+      from { transform: scale(0.95); opacity: 0; }
+      to { transform: scale(1); opacity: 1; }
+    }
+
+    @keyframes fadeInUp {
+      from { opacity: 0; transform: translateY(30px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    @media (max-width: 768px) {
+      h1 {
+        font-size: 30px;
+      }
+
+      #current-question {
+        font-size: 18px;
+      }
+
+      button {
+        font-size: 14px;
+        padding: 10px 24px;
+      }
+
+      #user-answer {
+        height: 120px;
+      }
     }
   </style>
 </head>
 <body>
   <h1>Mock Interview</h1>
-  
+
   <div id="question-container">
-    <h3 id="current-question">Loading questions...</h3>
+    <h3 id="current-question"></h3>
   </div>
 
   <div id="answer-container">
-    <textarea id="user-answer" placeholder="Type your answer here..."></textarea><br>
+    <textarea id="user-answer" placeholder="Your answer here..."></textarea>
     <button onclick="submitAnswer()">Submit Answer</button>
   </div>
 
@@ -105,34 +149,24 @@
     let questionIndex = 0;
 
     function loadNextQuestion() {
-      $.get("/mock_interview/ask_questions/?question_index=" + questionIndex, function(data) {
+      $.get("/mock_interview/ask_questions/?question_index=" + questionIndex, function (data) {
         if (data.status === "question_asked") {
           $("#current-question").text(data.question);
           questionIndex = data.next_question_index;
-        } else {
-          $("#current-question").text("Interview completed. Thank you!");
-          $("#answer-container").hide();
         }
       });
     }
 
     function submitAnswer() {
-      const userAnswer = $("#user-answer").val().trim();
-
-      if (userAnswer === "") {
-        alert("Please type an answer before submitting.");
-        return;
-      }
-
-      $.post("/mock_interview/submit_answer/", { answer: userAnswer }, function() {
+      const userAnswer = $("#user-answer").val();
+      $.post("/mock_interview/submit_answer/", { answer: userAnswer }, function () {
         loadNextQuestion();
-        $("#user-answer").val("");
+        $("#user-answer").val(""); // Clear the answer field
       });
     }
 
-    $(document).ready(function () {
-      loadNextQuestion();
-    });
+    // Load the first question on page load
+    loadNextQuestion();
   </script>
 </body>
 </html>

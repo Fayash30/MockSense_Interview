@@ -1,24 +1,122 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-    <title>Brainstorming</title>
-    <script>
-        let countdown = 10;
-        function updateTimer() {
-            document.getElementById("timer").innerText = countdown;
-            if (countdown === 0) {
-                window.location.href = "{% url 'group_disscussion_view' %}";
-            } else {
-                countdown--;
-                setTimeout(updateTimer, 1000);
-            }
+  <meta charset="UTF-8">
+  <title>Brainstorming</title>
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: 'Poppins', sans-serif;
+      background: white;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      min-height: 100vh;
+      text-align: center;
+      animation: fadeIn 1s ease-in-out;
+    }
+
+    h1 {
+      font-size: 48px;
+      color: #2c3e50;
+      margin-bottom: 20px;
+      animation: slideDown 1s ease;
+    }
+
+    p {
+      font-size: 28px;
+      color: #34495e;
+      margin-bottom: 30px;
+      padding: 10px 20px;
+      background: #ffffffaa;
+      border-radius: 12px;
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
+      animation: zoomIn 1.2s ease;
+    }
+
+    h2 {
+      font-size: 24px;
+      color: #1e3a8a;
+      animation: fadeInUp 1.5s ease;
+    }
+
+    #timer {
+      color: #d2042d;
+      font-size: 42px;
+      font-weight: bold;
+      display: inline-block;
+      margin-left: 10px;
+      animation: pulse 1s infinite ease-in-out;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    @keyframes slideDown {
+      from { transform: translateY(-50px); opacity: 0; }
+      to { transform: translateY(0); opacity: 1; }
+    }
+
+    @keyframes zoomIn {
+      from { transform: scale(0.9); opacity: 0; }
+      to { transform: scale(1); opacity: 1; }
+    }
+
+    @keyframes fadeInUp {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    @keyframes pulse {
+      0% { transform: scale(1); opacity: 1; }
+      50% { transform: scale(1.1); opacity: 0.7; }
+      100% { transform: scale(1); opacity: 1; }
+    }
+
+    @media (max-width: 768px) {
+      h1 {
+        font-size: 34px;
+      }
+
+      p {
+        font-size: 22px;
+      }
+
+      h2 {
+        font-size: 20px;
+      }
+
+      #timer {
+        font-size: 36px;
+      }
+    }
+  </style>
+
+  <script>
+    let countdown = 10;
+    function updateTimer() {
+        document.getElementById("timer").innerText = countdown;
+        if (countdown === 0) {
+            window.location.href = "{% url 'group_disscussion_view' %}";
+        } else {
+            countdown--;
+            setTimeout(updateTimer, 1000);
         }
-        window.onload = updateTimer;
-    </script>
+    }
+    window.onload = updateTimer;
+  </script>
 </head>
 <body>
-    <h1>Group Discussion Topic</h1>
-    <p style="font-size: 24px;"><strong>{{ topic }}</strong></p>
-    <h2>Starting in <span id="timer">10</span> seconds...</h2>
+  <h1>Group Discussion Topic</h1>
+  <p><strong>{{ topic }}</strong></p>
+  <h2>Starting in <span id="timer">10</span> seconds...</h2>
 </body>
 </html>
