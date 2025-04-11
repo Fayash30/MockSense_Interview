@@ -5,7 +5,10 @@ from django.shortcuts import render, redirect
 from django.http import JsonResponse
 from django.utils.safestring import mark_safe
 from django.views.decorators.csrf import csrf_exempt
-
+from django.conf import settings 
+import base64
+import uuid
+from django.core.files.base import ContentFile
 # Load questions from JSON file
 def load_questions():
     try:
@@ -41,18 +44,37 @@ def get_questions(request):
         return JsonResponse({"error": "Could not load questions."}, status=500)
 
     questions = get_mixed_category_questions(data)
+    randomized_questions = []
 
-    request.session["questions"] = questions  # ✅ Save full questions (with answer)
-
-    # 🔒 Send copy to frontend without answers
-    frontend_questions = []
     for q in questions:
-        q_copy = q.copy()
-        q_copy.pop("answer", None)
-        frontend_questions.append(q_copy)
+        # Create a shuffled copy of options
+        options = q["options"][:]
+        random.shuffle(options)
 
-    request.session["answers"] = []  # reset previous answers
+        # Identify the new index of the correct answer
+        correct_answer = q["answer"]
+        new_answer_index = options.index(correct_answer)
+        new_correct_answer = options[new_answer_index]
+
+        # Prepare new question format
+        randomized_question = {
+            "question": q["question"],
+            "options": options,
+            "answer": new_correct_answer  # store for backend session
+        }
+
+        randomized_questions.append(randomized_question)
+
+    request.session["questions"] = randomized_questions  # full set with correct answers
+
+    # Send to frontend without answers
+    frontend_questions = [
+        {k: v for k, v in q.items() if k != "answer"} for q in randomized_questions
+    ]
+
+    request.session["answers"] = []  # Reset any previous attempts
     return JsonResponse(frontend_questions, safe=False)
+
 
 # ✅ Accept submitted answers and redirect
 @csrf_exempt
@@ -101,3 +123,31 @@ def quiz_result(request):
         "total": total,
         "percentage": percentage
     })
+
+
+@csrf_exempt
+def store_violation_screenshot(request):
+    if request.method == 'POST':
+        import json
+        data = json.loads(request.body)
+        screenshot_data = data.get("screenshot", "")
+        violation_type = data.get("type", "")
+        timestamp = data.get("timestamp", "")
+
+        if screenshot_data:
+            format, imgstr = screenshot_data.split(';base64,') 
+            ext = format.split('/')[-1]  
+            file_name = f"{violation_type}_{uuid.uuid4().hex}.{ext}"
+
+            # Ensure folder exists
+            save_path = os.path.join(settings.MEDIA_ROOT, 'violations')
+            os.makedirs(save_path, exist_ok=True)
+
+            # Write the file
+            full_path = os.path.join(save_path, file_name)
+            with open(full_path, "wb") as f:
+                f.write(base64.b64decode(imgstr))
+
+            return JsonResponse({'status': 'success'})
+
+    return JsonResponse({'status': 'failed'}, status=400)

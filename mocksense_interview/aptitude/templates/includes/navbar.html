@@ -65,7 +65,6 @@
     let streamRef = null;
 
     document.addEventListener("DOMContentLoaded", async () => {
-      // --- Anti-inspection & copy prevention ---
       document.addEventListener("contextmenu", e => e.preventDefault());
       document.addEventListener("keydown", e => {
         if ((e.ctrlKey || e.metaKey) && ['c','v','x','u','s'].includes(e.key.toLowerCase())) e.preventDefault();
@@ -74,7 +73,6 @@
       document.addEventListener("copy", e => e.preventDefault());
       document.addEventListener("paste", e => e.preventDefault());
 
-      // --- Tab Switch Monitoring ---
       document.addEventListener("visibilitychange", () => {
         if (document.hidden) {
           tabSwitchCount++;
@@ -88,91 +86,107 @@
         }
       });
 
+      const delay = ms => new Promise(res => setTimeout(res, ms));
+
       let video = document.createElement('video');
-        video.autoplay = true;
-        video.playsInline = true;
-        video.style.display = 'none';
-        document.body.appendChild(video);
+      video.autoplay = true;
+      video.playsInline = true;
+      video.style.display = 'none';
+      document.body.appendChild(video);
 
-        try {
-          if (sessionStorage.getItem("camera_initialized") !== "true") {
-            streamRef = await navigator.mediaDevices.getUserMedia({ video: true });
-            video.srcObject = streamRef;
-            sessionStorage.setItem("camera_initialized", "true");
-          } else {
-            // Attempt to reuse previous stream or request again
-            streamRef = await navigator.mediaDevices.getUserMedia({ video: true });
-            video.srcObject = streamRef;
-          }
-
-          const model = await blazeface.load();
-
-          let isAlertActive = false;
-let redirectPending = false;
-let isRedirecting = false;
-let faceViolations = parseInt(sessionStorage.getItem("face_violations") || "0");
-let noFaceViolations = parseInt(sessionStorage.getItem("noface_violations") || "0");
-
-const runDetectionLoop = async () => {
-  const redirectedFlag = sessionStorage.getItem("is_redirecting") === "true";
-if (isRedirecting || redirectedFlag || !video.srcObject) return;
-
-
-  if (video.readyState === 4 && !isAlertActive && !redirectPending && !isRedirecting)    {
-    const faces = await model.estimateFaces(video, false);
-
-    if (faces.length > 1) {
-  isAlertActive = true;
-  faceViolations++;
-
-  if (!isRedirecting) {
-    alert("⚠️ Multiple faces detected!");
-  }
-
-  isAlertActive = false;
-  sessionStorage.setItem("face_violations", faceViolations);
-
-  if (faceViolations >= 3) {
-    window.location.href = "{% url 'limit_exceeded' %}?reason=multiple_faces";
-    return;
-  }
-
-} else if (faces.length === 0) {
-  isAlertActive = true;
-  noFaceViolations++;
-
-  if (!isRedirecting) {
-    alert("⚠️ No face detected! Please stay in frame.");
-  }
-
-  isAlertActive = false;
-  sessionStorage.setItem("noface_violations", noFaceViolations);
-
-  if (noFaceViolations >= 4) {
-    window.location.href = "{% url 'limit_exceeded' %}?reason=no_face";
-    return;
-  }
-}
-
-
-    console.log("faces detected:", faces.length);
-    console.log("violations - multiple:", faceViolations, "none:", noFaceViolations);
-  }
-
-  requestAnimationFrame(runDetectionLoop);
-};
-
-          runDetectionLoop();
-
-        } catch (err) {
-        console.warn("Camera access error:", err);
-
-        if (!sessionStorage.getItem("camera_alerted")) {
-          sessionStorage.setItem("camera_alerted", "true");
-          alert("🚫 Camera access is required. Please allow access and reload the page.");
+      try {
+        if (sessionStorage.getItem("camera_initialized") !== "true") {
+          streamRef = await navigator.mediaDevices.getUserMedia({ video: true });
+          video.srcObject = streamRef;
+          sessionStorage.setItem("camera_initialized", "true");
+        } else {
+          streamRef = await navigator.mediaDevices.getUserMedia({ video: true });
+          video.srcObject = streamRef;
         }
 
-        // Disable all inputs
+        const model = await blazeface.load();
+
+        let isAlertActive = false;
+        let isRedirecting = false;
+
+        let faceViolations = parseInt(sessionStorage.getItem("face_violations") || "0");
+        let noFaceViolations = parseInt(sessionStorage.getItem("noface_violations") || "0");
+
+        const captureScreenshot = () => {
+          const canvas = document.createElement("canvas");
+          canvas.width = video.videoWidth;
+          canvas.height = video.videoHeight;
+          const ctx = canvas.getContext("2d");
+          ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+          return canvas.toDataURL("image/jpeg");
+        };
+
+        const sendScreenshot = async (type) => {
+          const screenshot = captureScreenshot();
+          await fetch("{% url 'store_screenshot' %}", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+              screenshot: screenshot,
+              type: type,
+              timestamp: new Date().toISOString(),
+            }),
+          });
+        };
+
+        const runDetectionLoop = async () => {
+          if (!video.srcObject || video.readyState !== 4 || isAlertActive || isRedirecting) {
+            return requestAnimationFrame(runDetectionLoop);
+          }
+
+          const faces = await model.estimateFaces(video, false);
+
+          if (faces.length > 1) {
+            isAlertActive = true;
+            await sendScreenshot("multiple_faces");
+            faceViolations++;
+            sessionStorage.setItem("face_violations", faceViolations);
+
+            if (faceViolations >= 3) {
+              isRedirecting = true;
+              window.location.href = "{% url 'limit_exceeded' %}?reason=multiple_faces";
+              return;
+            } else {
+              alert("⚠️ Multiple faces detected!");
+            }
+            await delay(3000);
+            isAlertActive = false;
+
+          } else if (faces.length === 0) {
+            isAlertActive = true;
+            await sendScreenshot("no_face");
+            noFaceViolations++;
+            sessionStorage.setItem("noface_violations", noFaceViolations);
+
+            if (noFaceViolations >= 4) {
+              isRedirecting = true;
+              window.location.href = "{% url 'limit_exceeded' %}?reason=no_face";
+              return;
+            } else {
+              alert("⚠️ No face detected! Please stay in frame.");
+            }
+            await delay(3000);
+            isAlertActive = false;
+          }
+
+          console.log("faces:", faces.length, "| multiple:", faceViolations, "| none:", noFaceViolations);
+          requestAnimationFrame(runDetectionLoop);
+        };
+
+        runDetectionLoop();
+
+      } catch (err) {
+        console.warn("Camera error:", err);
+        if (!sessionStorage.getItem("camera_alerted")) {
+          sessionStorage.setItem("camera_alerted", "true");
+          alert("🚫 Camera access is required. Please allow access and reload.");
+        }
+
         document.querySelectorAll('input, button, select, textarea').forEach(el => {
           el.disabled = true;
           el.style.cursor = 'not-allowed';
@@ -181,18 +195,14 @@ if (isRedirecting || redirectedFlag || !video.srcObject) return;
       }
     });
 
-    // Optional: Cleanup on page unload
-window.addEventListener('beforeunload', () => {
-  isRedirecting = true; // 🔥 This prevents alerts during redirect
-
-  if (streamRef) {
-    streamRef.getTracks().forEach(track => track.stop());
-  }
-});
-
-
+    window.addEventListener('beforeunload', () => {
+      if (streamRef) {
+        streamRef.getTracks().forEach(track => track.stop());
+      }
+    });
   </script>
 {% endif %}
+
 
 
 <!-- Custom Toast Styles -->

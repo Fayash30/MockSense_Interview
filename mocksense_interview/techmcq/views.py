@@ -19,45 +19,75 @@ def quiz_home(request):
 @require_GET
 def get_questions(request):
     selected_questions = random.sample(all_questions, 10)
-    # Return copies of each question without the answer
-    questions_to_send = []
-    for q in selected_questions:
-        q_copy = q.copy()
-        q_copy.pop("answer", None)
-        questions_to_send.append(q_copy)
-    return JsonResponse(questions_to_send, safe=False)
+    randomized_questions = []
 
+    for q in selected_questions:
+        # Convert dict to list of (label, text) pairs and shuffle
+        options_list = list(q["options"].items())
+        random.shuffle(options_list)
+
+        # Reassign labels A-D
+        new_labels = ['A', 'B', 'C', 'D']
+        new_options = {}
+        new_answer = None
+
+        for i, (old_label, text) in enumerate(options_list):
+            new_label = new_labels[i]
+            new_options[new_label] = text
+            if old_label == q["answer"]:
+                new_answer = new_label
+
+        # Build updated question dict
+        randomized_question = {
+            "question": q["question"],
+            "options": new_options,
+            "answer": new_answer,  # Keep correct answer for backend
+            "difficulty": q.get("difficulty", ""),
+            "topic": q.get("topic", "")
+        }
+
+        randomized_questions.append(randomized_question)
+
+    # Save the full version (with answers) in session
+    request.session["mcq_questions"] = randomized_questions
+
+    # Send to frontend without answers
+    frontend_questions = [
+        {k: v for k, v in q.items() if k != "answer"} for q in randomized_questions
+    ]
+
+    return JsonResponse(frontend_questions, safe=False)
 
 @csrf_exempt
 @require_POST
 def submit_answers(request):
     data = json.loads(request.body)
     user_answers = data.get("answers", {})
-    selected_qs = data.get("questions", [])
-    
+
+    # Use stored randomized questions
+    session_questions = request.session.get("mcq_questions", [])
     score = 0
     results = []
 
-    for idx, user_q in enumerate(selected_qs):
-        question_text = user_q['question']
-        actual_q = next((q for q in all_questions if q['question'] == question_text), None)
-        if actual_q:
-            correct = actual_q.get('answer')
-            user_ans = user_answers.get(str(idx))
-            is_correct = (user_ans == correct)
-            if is_correct:
-                score += 1
+    for idx, actual_q in enumerate(session_questions):
+        user_ans = user_answers.get(str(idx))
+        correct = actual_q.get("answer")
+        is_correct = (user_ans == correct)
 
-            results.append({
-                "question": actual_q['question'],
-                "user_answer": actual_q['options'].get(user_ans, 'Not Answered'),
-                "correct_answer": actual_q['options'][correct],
-                "is_correct": is_correct
-            })
+        if is_correct:
+            score += 1
 
-    request.session['quiz_score'] = score
-    request.session['quiz_total'] = len(selected_qs)
-    return JsonResponse({"redirect_url": reverse('mcq_result')})
+        results.append({
+            "question": actual_q["question"],
+            "user_answer": actual_q["options"].get(user_ans, 'Not Answered'),
+            "correct_answer": actual_q["options"][correct],
+            "is_correct": is_correct
+        })
+
+    request.session["quiz_score"] = score
+    request.session["quiz_total"] = len(session_questions)
+    return JsonResponse({"redirect_url": reverse("mcq_result")})
+
 
 @require_GET
 def quiz_result_view(request):

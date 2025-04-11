@@ -50,7 +50,7 @@ def user_logout(request):
         logout(request)
         if request.headers.get('Accept') == 'application/json':
             return JsonResponse({'success': True})
-    return redirect('login')
+    return redirect('home')
 
 def home(request):
     return render(request, "accounts/index.html")
