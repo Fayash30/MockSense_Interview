@@ -137,10 +137,24 @@
   <p>Click below to start your group discussion session.</p>
 
   <div class="start-btn-container">
-    <a href="{% url 'start_group_discussion' %}">
-      <button>Start Discussion</button>
-    </a>
+    <form id="gd-form" action="{% url 'start_group_discussion' %}" method="get">
+      <button type="submit">Start Random Topic Discussion</button>
+      <br><br>
+      <button type="button" onclick="toggleInput()">Start with Custom Topic</button>
+      <div id="custom-topic-container" style="margin-top: 15px; display: none;">
+        <input type="text" name="topic" placeholder="Enter your topic..." style="padding: 10px; width: 60%;">
+        <button type="submit" style="margin-left: 10px;">Start Discussion</button>
+      </div>
+    </form>
   </div>
+  
+  <script>
+    function toggleInput() {
+      const container = document.getElementById('custom-topic-container');
+      container.style.display = container.style.display === 'none' ? 'block' : 'none';
+    }
+  </script>
+  
 
   <div class="notes-box">
     <h2>📝 Important Notes:</h2>

@@ -57,6 +57,7 @@ opt_einsum==3.4.0
 optree==0.14.1
 packaging==24.2
 pdfminer.six==20250327
+pillow==11.1.0
 preshed==3.0.9
 proto-plus==1.26.1
 protobuf==5.29.4

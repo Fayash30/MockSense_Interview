@@ -37,9 +37,9 @@ labels = {0: "fear", 1: "confused", 2: "shy", 3: "neutral", 4: "happy"}
 face_cascade = cv2.CascadeClassifier(cv2.data.haarcascades + "haarcascade_frontalface_default.xml")
 
 # Quote display configuration
-CONFUSED_THRESHOLD = 5
+CONFUSED_THRESHOLD = 3
 QUOTE_DISPLAY_DURATION = 7
-NEXT_QUOTE_DELAY = 5
+NEXT_QUOTE_DELAY = 4
 
 # Quote tracking state
 confused_start_time = None
@@ -116,18 +116,27 @@ def discussion_view(request):
 
 def start_grp_discussion_view(request):
     """Generate topic and AI sample discussion."""
-    prompt = (
-    "Generate a random group discussion topic. It can be related to social issues, technology, lifestyle, or current trends. Should be random on every time not the same topic\n\n"
-    "Then simulate a casual group discussion between two participants: Male and Female.\n"
-    "Each person should share 3 points in a conversational, easy-to-understand manner—as if they're casually discussing in a college or office setting.\n"
-    "The tone should be natural, friendly, and realistic. Avoid overly formal language or complex vocabulary.\n"
-    "Some points can agree with each other, and others can present different views, but everything should stay respectful and easygoing.\n\n"
-    "Provide your output in the following format:\n"
-    "Group Discussion Topic: <Topic>\n\n"
-    "Male:\n1. ...\n2. ...\n3. \n\n"
-    "Female:\n1. ...\n2. ...\n3. "
-)
+    topic = request.GET.get("topic", "").strip()
 
+    if topic:
+        prompt = (
+            f"Create a group discussion around the topic: '{topic}'.\n"
+            "Simulate a discussion between two participants: Male and Female.\n"
+            "Each person should share 3 points in a conversational, easy-to-understand tone.\n"
+            "Keep it natural, realistic, and friendly. Avoid formal speech.\n\n"
+            f"Group Discussion Topic: {topic}\n\n"
+            "Male:\n1. ...\n2. ...\n3. ...\n\n"
+            "Female:\n1. ...\n2. ...\n3. ..."
+        )
+    else:
+        prompt = (
+            "Generate a random group discussion topic. It Should be most random topics. Like Technology, current affairs, society and etc... It should be random every time.\n\n"
+            "Then simulate a discussion between Male and Female.\n"
+            "Each person shares 3 points casually.\n\n"
+            "Group Discussion Topic: <Topic>\n\n"
+            "Male:\n1. ...\n2. ...\n3. ...\n\n"
+            "Female:\n1. ...\n2. ...\n3. ..."
+        )
 
     response = model.generate_content(prompt)
     lines = response.text.strip().splitlines()
@@ -243,8 +252,6 @@ def improve_sentences_view(request):
         "original": user_text,
         "improved": improved_text
     })
-
-
 
 @csrf_exempt
 def group_discussion(request):
