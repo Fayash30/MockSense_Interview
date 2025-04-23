@@ -21,10 +21,11 @@ from django.core.files.storage import default_storage
 from pdfminer.high_level import extract_text
 from tensorflow.keras.preprocessing.sequence import pad_sequences
 import speech_recognition as sr
+from sentence_transformers import SentenceTransformer, util
 
 # Load spaCy model
 nlp = spacy.load("en_core_web_lg")
-
+similarity_model = SentenceTransformer('paraphrase-MiniLM-L6-v2')
 # Load pre-trained RNN model and tokenizer
 question_generator_path = settings.BASE_DIR / "mock_interview/ML_model/question_generator_rnn.h5"
 model = tf.keras.models.load_model(question_generator_path)
@@ -273,7 +274,11 @@ def load_user_answers(file_path):
         return []
 
 def calculate_similarity(answer, user_answer):
-    return nlp(answer).similarity(nlp(user_answer))
+    if not is_valid_answer(user_answer):
+        return 0.0  # Or a very low score
+    embeddings = similarity_model.encode([answer, user_answer], convert_to_tensor=True)
+    score = util.pytorch_cos_sim(embeddings[0], embeddings[1]).item()
+    return score
 
 def limit_exceeded(request):
     reason = request.GET.get('reason', 'tab')
@@ -303,6 +308,9 @@ def mock_interview_result(request):
     }
 
     return render(request, "mock_interview/result.html", {"result_data": result_data})
+
+def is_valid_answer(text):
+    return text and text.strip().lower() not in ["", "could not understand", "i dont know", "iam not aware"]
 
 @csrf_exempt
 def detect_emotion(request):

@@ -67,9 +67,9 @@
       transform: translateY(-5px);
     }
 
-    .chart-card{
+    /* .chart-card{
       background-color: rgb(237, 53, 53);
-    }
+    } */
     canvas {
       margin-top: 10px;
     }
@@ -118,6 +118,7 @@
   </style>
 </head>
 <body>
+  {% include 'includes/navbar.html' %}
   <header>
     <h2>Mock Interview Results</h2>
     <div class="score-box">Overall Score: <span id="score">{{ result_data.overall_score }}</span>%</div>

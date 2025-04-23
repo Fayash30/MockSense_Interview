@@ -1,9 +1,9 @@
 {
     "questions": [
-        "Explain the MEAN stack architecture.",
+        "When should I use Flask over Django?",
         "Explain JavaScript data types.",
-        "What are Threads?",
-        "When to use 'tuple' over 'list' in Python?",
-        "What is polymorphism in Java?"
+        "What are Processes?",
+        "What are the advantages of Python?",
+        "Why use annotations in Java?"
     ]
 }
