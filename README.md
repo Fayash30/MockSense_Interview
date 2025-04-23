@@ -1,7 +1,3 @@
-Absolutely, Fayash! Here's the **improved and refined version** of your `README.md` — polished for clarity, flow, and professionalism, while retaining all the core content and technical richness:
-
----
-
 # MockSense Interview System 🎙️🤖
 
 **MockSense** is an AI-powered mock interview platform designed to help candidates **overcome nervousness**, gain **confidence**, and **improve communication skills** through realistic interview simulations. The system uses AI to generate personalized questions, simulate group discussions, assess technical and aptitude skills, and provide real-time feedback.
@@ -136,10 +132,6 @@ This project is licensed under the **MIT License**. See the [LICENSE](LICENSE) f
 
 ---
 
-Got it! Here's the updated **Author** section to reflect that it's a **team project**, with space to add your teammates. Feel free to customize the names, roles, and links:
-
----
-
 ## 👨‍💻 Authors
 
 This project was developed by a passionate team of final-year IT students:
@@ -156,9 +148,3 @@ This project was developed by a passionate team of final-year IT students:
 - **Sowmiya S**  
   [LinkedIn](https://www.linkedin.com/in/sowmiya-s-69651824a) • [GitHub](https://github.com/sowmiya493)
 
----
-
-If you give me the actual names and roles of your teammates, I can fill this out completely for you!
----
-
-Let me know if you’d like me to create the screenshot placeholder images or help make this a landing page too.
