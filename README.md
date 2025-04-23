@@ -53,8 +53,6 @@
 
 ## 📸 Screenshots
 
-> Replace the placeholder images below with actual screenshots from your app.
-
 ### Home
 ![Home](screenshots/Home_Page.jpg)
 
@@ -62,7 +60,7 @@
 ![Online Assessment](screenshots/mcq.jpg)
 
 ### Resume Upload
-![Resume Upload](screenshots/Resume_Upload.jpg)
+![Resume Upload](screenshots/Resume_upload.jpg)
 
 ### Mock Interview Session
 ![Mock Interview](screenshots/Mock%20Interview.jpg)
